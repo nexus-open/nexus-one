@@ -1,0 +1,21 @@
+=== NEXUS ONE v2.0 kickstand statics (laptop / easel pose) ===
+propped mass = 272 g  (241 device + 31 keyboard)
+CoM: x = -6.63 mm, y = 18.23 mm  (x from stick bottom-front edge)
+  stick      229 g  @ (  -4.40,  16.42) mm
+  panel       12 g  @ ( -18.05,  67.37) mm
+  keyboard    31 g  @ ( -18.65,  12.60) mm
+hinge H = (-18.39, 26.13) mm
+leg L = 52.3 mm (2-stage telescopic; stowed 34 mm) -> foot F = (-63.65, -0.00) mm
+support polygon x in [-63.6, 10.6] mm
+tip margins: rear 57.0 mm / front 17.2 mm -> NO TIP-OVER
+max forward push at screen top before tip-over: 0.45 N
+note: typing force is downward on the keyboard deck -> stabilising, not tipping
+static leg load ~ 0 N (device self-stable on base; leg = rear prop / angle stop)
+hinge torque: leg self-weight moment = 1.33 mN.m
+hinge torque: device-weight moment about H = 31.5 mN.m
+REQUIRED = (leg + 25% disturbance allowance) x SF2.0 = 18.4 mN.m
+SPECIFY: 20 mN.m nominal micro friction hinge, 0-75 deg, detent-free
+         holding margin on static leg load: 15.0x
+ID cooling  R=  22.0 k -> 2.269 V (2815 ADC counts @12b)
+ID keyboard R=  33.0 k -> 2.533 V (3143 ADC counts @12b)
+ID open     R=1000000.0 k -> 3.300 V (4095 ADC counts @12b)

@@ -1,0 +1,93 @@
+========================================================================
+NEXUS ONE v2.0 OWN-BRAIN SPINE — power & thermal simulation
+Branch of v1.0 freeze (untouched). i.MX95-class SoM basis.
+========================================================================
+
+[1] PER-MODE POWER  (M = measured/published basis, A = assumption)
+------------------------------------------------------------------------
+mode           total W  vs folded 2.0W  vs open 3.0W  runtime 13.7Wh
+------------------------------------------------------------------------
+deep_sleep        0.05            PASS          PASS       297.8 h
+stick_idle        0.35            PASS          PASS        39.1 h
+phone_active      2.85            FAIL          PASS         4.8 h
+ai_burst          6.90            FAIL          FAIL         2.0 h
+------------------------------------------------------------------------
+
+  deep_sleep = 0.05 W — SoC suspend (DDR off), ESP32-S3 light-sleep, all rails gated
+      [M] SoC suspend            0.031 W
+      [A] ESP32-S3               0.010 W
+      [A] PMIC quiescent         0.005 W
+
+  stick_idle = 0.35 W — SoC suspend-to-RAM, ESP32 managing drum/BLE, strip dim
+      [A] SoC STR+DDR SR         0.100 W
+      [A] ESP32-S3 active        0.150 W
+      [M] strip display dim      0.050 W
+      [A] PMIC+losses            0.050 W
+
+  phone_active = 2.85 W — Open, 4xA55@1.0GHz browsing, display mid, Wi-Fi/BT on
+      [A] SoC 4xA55@1.0G         0.950 W
+      [A] GPU light              0.200 W
+      [A] LPDDR5 active          0.250 W
+      [M] display open mid       0.900 W
+      [A] Wi-Fi+BT               0.350 W
+      [A] ESP32-S3               0.100 W
+      [A] PMIC losses            0.100 W
+
+  ai_burst = 6.90 W — Open, 6xA55@2.0GHz + NPU 2TOPS + display full + Wi-Fi
+      [A] SoC 6xA55@2.0G         3.200 W
+      [A] NPU 2 TOPS             0.800 W
+      [A] LPDDR5 6400            0.500 W
+      [M] display full           1.600 W
+      [A] Wi-Fi                  0.400 W
+      [A] ESP32-S3               0.100 W
+      [A] PMIC losses            0.300 W
+
+[2] FOLDED DERATE ANALYSIS  (law: <=2.0 W folded, Rth=8.8 K/W)
+------------------------------------------------------------------------
+  AI burst wants 6.90 W folded -> FAIL by 4.90 W.
+  Fixed folded loads (strip dim, ESP32, BLE, PMIC) ~= 0.50 W
+  -> SoC+DRAM budget folded = 1.50 W
+  Derated folded AI-lite = 1.20 W -> PASS
+  Required clock drops (folded):
+    CPU : 6x A55 @ 2.0 GHz  ->  2x A55 @ 800 MHz (4 cores power-gated)
+    NPU : eIQ Neutron ON    ->  OFF (power-gated; 2 TOPS unavailable)
+    DDR : LPDDR5 6400 MT/s  ->  1600 MT/s
+    DISP: full panel 1.6 W   ->  strip only 0.25 W
+    GPU : on                 ->  off
+  Folded+battery-module law (<= 1.5 W): derate harder ->
+    1x A55 @ 600 MHz, NPU off, strip display ~= 1.20 W -> PASS
+
+[3] BURST-TIME BEFORE THERMAL CAP TRIPS
+    (Tj_max=105C, Tamb=35C, Cth=15 J/K ASSUMPTION)
+------------------------------------------------------------------------
+  Cth=  10 J/K : folded burst  106.9 s ( 1.8 min) | open burst  148.7 s ( 2.5 min)
+  Cth=  15 J/K : folded burst  160.4 s ( 2.7 min) | open burst  223.1 s ( 3.7 min)
+  Cth=  25 J/K : folded burst  267.3 s ( 4.5 min) | open burst  371.8 s ( 6.2 min)
+  HONEST RESULT: full AI power is OPEN-MODE ONLY, and even open it is
+  BURST-DUTY (3.7 min at Cth=15 before Tj hits 105C), not sustained.
+
+[4] COOLING MODULE EFFECT  (ASSUMPTION: +1.0 W folded cap)
+------------------------------------------------------------------------
+  Folded cap with cooler: 3.0 W
+  AI burst 6.90 W vs 3.0 W -> FAIL (still burst-only)
+  Derated folded AI-lite 1.20 W -> PASS with headroom
+  Cooled folded burst time: 167.7 s (2.8 min) at Cth=15
+  NOTE: higher sustained cap -> higher steady-state temp -> less burst
+  margin. Replace COOLING_DP_W with the modules workstream's number.
+
+[5] BATTERY RUNTIME (13.7 Wh internal; +10 Wh module in parens)
+------------------------------------------------------------------------
+  deep_sleep      297.8 h   ( 515.2 h)
+  stick_idle       39.1 h   (  67.7 h)
+  phone_active      4.8 h   (   8.3 h)
+  ai_burst          2.0 h   (   3.4 h)
+
+[6] ASSUMPTIONS (replace with measurements when hardware exists)
+------------------------------------------------------------------------
+  A1 SoC active draws scaled from A55-class norms (no i.MX95 full-load
+     EVK number recovered from AN14449 in this pass).
+  A2 Rth_open = 4.0 K/W (open panel radiates; needs v0.4-style sim).
+  A3 Cth = 15 J/K local thermal mass (needs thermal test).
+  A4 Cooling module raises folded cap by +1.0 W (pending modules agent).
+  A5 Tamb = 35 C worst case (pocket/hand).
+========================================================================

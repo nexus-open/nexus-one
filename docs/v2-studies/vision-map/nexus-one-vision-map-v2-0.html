@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXUS ONE — Vision × Engineering Map v2.0</title>
+<style>
+  :root{--bg:#05070c;--panel:#0b101c;--line:#1c2a44;--txt:#dbe7ff;--dim:#8fa5c8;--cyan:#22d3ee;--green:#34d399;--blue:#60a5fa;--amber:#fbbf24;--grey:#94a3b8}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:18px 14px 40px}
+  .wrap{max-width:860px;margin:0 auto}
+  h1{font-size:26px;letter-spacing:2px;margin:0}
+  h1 .inf{color:var(--cyan)}
+  .tag{color:var(--cyan);letter-spacing:4px;font-size:12px;margin-top:2px}
+  .rule{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--cyan);border-radius:8px;padding:12px 14px;margin:16px 0;font-size:14px;line-height:1.55}
+  .counts{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 4px}
+  .count{border:1px solid var(--line);border-radius:20px;padding:5px 12px;font-size:13px;background:var(--panel)}
+  h2{font-size:15px;letter-spacing:2px;color:var(--cyan);margin:26px 0 8px;border-bottom:1px solid var(--line);padding-bottom:6px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  td,th{border-bottom:1px solid var(--line);padding:9px 8px;vertical-align:top;text-align:left}
+  th{color:var(--dim);font-weight:600;font-size:12px;letter-spacing:1px}
+  td.el{font-weight:700;width:24%}
+  td.claim{color:var(--dim);width:26%;line-height:1.45}
+  td.eng{line-height:1.5}
+  .chip{display:inline-block;border-radius:4px;padding:1px 7px;font-size:11px;font-weight:700;letter-spacing:.5px;white-space:nowrap;margin-bottom:4px}
+  .p{background:#064e3b;color:var(--green);border:1px solid #065f46}
+  .d{background:#172554;color:var(--blue);border:1px solid #1e3a8a}
+  .g{background:#451a03;color:var(--amber);border:1px solid #92400e}
+  .v{background:#1e293b;color:var(--grey);border:1px solid #334155}
+  .targets{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 16px;margin-top:10px}
+  .targets li{margin:7px 0;line-height:1.5;font-size:14px}
+  .foot{color:var(--dim);font-size:12.5px;line-height:1.6;margin-top:22px}
+  b.n{color:var(--cyan);font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>NEXUS ONE <span class="inf">∞</span></h1>
+  <div class="tag">STICK. EXPAND. EVOLVE. — VISION × ENGINEERING MAP · v2.0 · 2026-10-19</div>
+
+  <div class="rule"><b>The rule of this map:</b> the posters are the target and they stay whole. Every element of the vision is listed below — nothing deleted, nothing quietly shrunk. v2.0 closes ten of v1.8's eleven GAP+ROUTE rows with real designs (each with a checker, a compile, or a calc behind it — statuses move only on evidence). The volumetric hologram gap was re-measured and got <i>bigger</i> (~100× → ~1000×); it is reported, not hidden.</div>
+
+  <div class="counts">
+    <span class="count">31 vision elements</span>
+    <span class="count" style="color:var(--green)">14 proven in simulation</span>
+    <span class="count" style="color:var(--blue)">11 designed</span>
+    <span class="count" style="color:var(--amber)">3 gap + route</span>
+    <span class="count" style="color:var(--grey)">3 vision only</span>
+  </div>
+
+  <h2>FORM FACTORS — THE FOUR MODES</h2>
+  <table>
+    <tr><th>ELEMENT</th><th>THE VISION</th><th>ENGINEERING STATUS</th></tr>
+    <tr><td class="el">Stick mode</td><td class="claim">Ultra-compact carry-anywhere stick</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>Frozen at <b class="n">183.9 × 34 × 22 mm</b>, 241 g (v1.0). CAD compiles clean; STL bounding box matches the frozen dims exactly. The posters' 120 mm stick cannot contain the real 162.9 mm panel — geometry, not opinion.</td></tr>
+    <tr><td class="el">Phone mode</td><td class="claim">Full smartphone, full display</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>One panel unrolls to <b class="n">162.9 × 71.5 mm</b>. Deployment checker passed 1,001 poses: panel length conserved to 0.000 mm, bend radius R8 held at every pose.</td></tr>
+    <tr><td class="el">Tablet mode</td><td class="claim">175 × 150 mm productivity mode (four-modes board: 162.9 × 142.8)</td><td class="eng"><span class="chip d">DESIGNED</span><br><b>v2.0:</b> opposed dual-roll — one continuous panel, drum 1 (+Y, the untouched v1.0 phone mechanism) + drum 2 (−Y, 71.3 mm tablet reserve, ≤1 full turn at R8, interleave film). Checker PASS: 1,001 poses/side, panel length conserved ~1e-14 mm, bend ≥ R8 everywhere. Screen <b class="n">162.9 × 142.8 mm</b> exact. Cost: stick 190×46×22 mm, 329 g (+88), pull ~2.9 N (manual). Single-/dual-panel alternatives evaluated and rejected on numbers.</td></tr>
+    <tr><td class="el">Laptop mode</td><td class="claim">Keyboard module, full workstation</td><td class="eng"><span class="chip d">DESIGNED</span><br><b>v2.0:</b> keyboard module hardware (118×22.5 mm, 30 keys, 0.5 W class, ~31 g, ID 33 kΩ), tail-cap kickstand 0–75° (no-tip-over proven in statics, 20 mN·m hinge), and Nexus OS desktop mode (3 windows + taskbar, triggers on bay id=6 + encoder ≥90%, real sim numbers drive it). Keyboard firmware reconciled to the hardware layout (M-1).</td></tr>
+  </table>
+
+  <h2>DISPLAY &amp; HOLOGRAM</h2>
+  <table>
+    <tr><th>ELEMENT</th><th>THE VISION</th><th>ENGINEERING STATUS</th></tr>
+    <tr><td class="el">Flexible AMOLED</td><td class="claim">Single continuous rollable OLED</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>Real part class exists today (6.67″ flexible AMOLED, 2400×1080, ≈162.9 × 74.5 mm). Still NOT-VERIFIED: a maker panel's dynamic roll-cycle rating — datasheets don't publish it.</td></tr>
+    <tr><td class="el">3D without glasses</td><td class="claim">Holographic display, 3D interaction</td><td class="eng"><span class="chip d">DESIGNED</span><br><b>v2.0 spec added:</b> IR eye-tracking (OV2312-class @120 fps + 850 nm illuminator) in the leading bar: 25.6 ms eye-to-photon (24 ms under the annoyance bound), 0.70 W (5.1%/h of pack), dynamic 2-view steering (~4× GPU saving), 47 LPI inside the real 10–100 LPI film range. Still stores in the carry-case sleeve (v0.6 finding).</td></tr>
+    <tr><td class="el">Free-space hologram</td><td class="claim">Projected 3D globe, gesture touch, holographic calls</td><td class="eng"><span class="chip g">GAP + ROUTE</span><br><b>v2.0 re-measurement:</b> the gap got <i>bigger</i>, honestly. The poster’s <i>filled</i> 30 mm globe needs <b class="n">938 traps ≈ 1000×</b> beyond the demonstrated 1-trap systems (v0.5’s 100× was the wireframe case: 197 traps, recomputed and confirmed). ~192 W wall-plug, and open-air operation lands in Class 3B/4 — eye safety is a HARD BLOCKER. Three research advances named (parallel addressed traps, ~50× steering, persistent-emission particles). Standing research track; the product layer never promises the globe.</td></tr>
+  </table>
+
+  <h2>MODULE ECOSYSTEM — MAGNETIC BACK RAIL, 8 POGO PINS</h2>
+  <table>
+    <tr><th>ELEMENT</th><th>THE VISION</th><th>ENGINEERING STATUS</th></tr>
+    <tr><td class="el">Extra battery module</td><td class="claim">Slide-in power upgrade</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>+10 Wh, 55 g. Firmware compiles; the module enforces its own LiPo safety windows — the spine cannot override them. Thermal derate 1.5 W when folded.</td></tr>
+    <tr><td class="el">Camera Pro module</td><td class="claim">200MP + 3D depth capture</td><td class="eng"><span class="chip d">DESIGNED</span><br>Periscope module design (v0.5) — 200MP-class sensors are real, but only fit as a module, never in the spine. Firmware compiles; 10 s burst + cool-down enforced module-side.</td></tr>
+    <tr><td class="el">Projector module</td><td class="claim">Holographic projector module</td><td class="eng"><span class="chip d">DESIGNED</span><br><b>v2.0 integration:</b> AirScreen as a bay module — DLP 4.0 W + atomiser 2.0 W + control 0.4 W = <b class="n">6.4 W</b> of the 10 W bay; 15 ml reservoir = 15-min session; 120×70 mm image at 150 mm throw; stick side 2.5 W holds the 3 W open law; full session = 2.23 Wh (16.2% of pack).</td></tr>
+    <tr><td class="el">Storage module</td><td class="claim">Up to 4TB modular storage</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>The poster's 4TB holds — as <b class="n">2 × 2TB microSD</b> (one card's real ceiling is 2TB). Own USB-C mass-storage; firmware compiles (427,910 B).</td></tr>
+    <tr><td class="el">Sensor module</td><td class="claim">Health + environment sensing</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>Firmware compiles (290,877 B), 0.3 W draw, 12 g. Sensor parts class is real.</td></tr>
+    <tr><td class="el">Cooling module</td><td class="claim">Active cooling upgrade</td><td class="eng"><span class="chip d">DESIGNED</span><br><b>v2.0:</b> micro-blower (0.40 W) + Cu spreader + fin stack — beats TEC ~23× on moved-heat/W. Thermal calc: folded Rth <b class="n">8.8 → 2.58 K/W</b>, sustained folded cap <b class="n">2.0 → 6.97 W</b> (3.4× the law; hot-day 0.91 → 3.1 W). Firmware compiles (336,721 B). The calc re-derives the frozen law exactly before extending it.</td></tr>
+    <tr><td class="el">Keyboard module</td><td class="claim">Laptop mode keyboard</td><td class="eng"><span class="chip d">DESIGNED</span><br><b>v2.0:</b> 3×10 = 30-key matrix reconciled to the hardware envelope (M-1), TinyUSB HID device (needs <span style="font-family:monospace">:USBMode=default</span>), 33 kΩ ID, 0.5 W class, scan ~200 Hz paced, key-to-HID 6–16 ms (M-2 corrected). Firmware compiles (388,694 B).</td></tr>
+    <tr><td class="el">Satellite module</td><td class="claim">Satellite communication</td><td class="eng"><span class="chip d">DESIGNED</span><br><b>v2.0:</b> MT6825-class 3GPP R17 IoT-NTN, L-band patch in the polymer end-cap (metal cap = Faraday shield at 1.6 GHz). Link sanity: GEO FSPL 187.8 dB closes at the R17 design point; peak TX ~2.0 W (3.0 W class), duty-cycled ≤10%, TX gated on spine open-mode permit. Firmware compiles (335,906 B). In-situ antenna efficiency + certification still NOT-VERIFIED.</td></tr>
+    <tr><td class="el">Neural module</td><td class="claim">AI accelerator module</td><td class="eng"><span class="chip d">DESIGNED</span><br><b>v2.0 decision:</b> BUILD now on USB2 — Edge-TPU-class MCM (4 TOPS int8, ~2 TOPS/W, ~2 W; Coral is the existence proof) + S3 supervisor (75 °C throttle / 85 °C cut). USB2 bounds model-load (~1 s/50 MB), not inference. USB3-over-pogo path documented but not built (needs 12-pogo bay, SI sim, re-cert). Firmware compiles (326,026 B).</td></tr>
+  </table>
+  <h2>CORE &amp; INTERNALS</h2>
+  <table>
+    <tr><th>ELEMENT</th><th>THE VISION</th><th>ENGINEERING STATUS</th></tr>
+    <tr><td class="el">Unroll mechanism</td><td class="claim">Smooth auto-slide, guide rails</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>Drum R8 with rack-and-pinion sync (m0.5, 32T); negator spring 12 N·mm; opening force ≈2.0 N; panel travel 30.9 mm. Left/right sequencing rules solved in v0.3–v0.7.</td></tr>
+    <tr><td class="el">Magnetic lock</td><td class="claim">Magnetic locking at open / closed</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>Slide friction is only 0.04 N, so the design rule is a magnetic lock ≥1.0 N per wing-equivalent, detents ≥3 N, sensed by DRV5032 switches. The poster's magnetic lock is load-bearing in the real design too.</td></tr>
+    <tr><td class="el">Spine electronics</td><td class="claim">Layered internal architecture, smart connectors</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>Tray board 140 × 26 mm fits the 4.5 mm tray (23.8% fill). ESP32-S3 controller, AS5600 drum encoder, BQ25890-class charger, MAX17048 gauge. Firmware compiles (572,989 B, 43% flash); logic model passes 12/12 tests. (Design catch found &amp; fixed: encoder and gauge share I2C address 0x36 → separate buses.)</td></tr>
+    <tr><td class="el">Rolling ribbon cable</td><td class="claim">Flexible display roll connection</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>FPC rolling U-loop at R6: tip travel 13.1 mm, take-up 15.7 mm, design target 54,750 cycles. A real FPC's rating at R6 dynamic is assumption-labelled, not datasheet-proven.</td></tr>
+    <tr><td class="el">Internal battery</td><td class="claim">High-density modular battery layer</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br><b class="n">13.7 Wh</b> (2 × 6.85 Wh — the same split your anatomy board shows). Stick idle 0.30 W → 45.7 h; camera mode 4.5 W → 3.0 h burst-duty.</td></tr>
+    <tr><td class="el">Thermal system</td><td class="claim">Vapor chamber / graphene cooling layer</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>The thermal <i>law</i> is proven, and it is a hard ceiling: ≤2 W folded, ≤1.5 W folded with battery module, ≤3 W open; Pocket Mode 0.9 W on hot days (43 °C skin limit). No vapor chamber inside the stick — the shell is the heat path. The poster's cooling layer maps to this law plus the cooling module.</td></tr>
+    <tr><td class="el">Premium materials</td><td class="claim">Titanium alloy, carbon fiber, ceramic glass</td><td class="eng"><span class="chip d">DESIGNED</span><br><b>v2.0 study:</b> Ti-6Al-4V rails, CFRP back shell, ceramic accents, polymer caps STAY (RF windows — non-negotiable). Mass <b class="n">241 → 261 g (+20 g, +8.3%)</b>. Titanium buys zero specific stiffness over aluminium (E/ρ 25.7 vs 25.5); the CFRP shell buys +71%. <b>Conflict found:</b> Ti conducts 25× worse than Al — the 2 W folded law does not survive the premium stack as drawn; graphite spreader + 1-D model required before any v2 freeze.</td></tr>
+  </table>
+
+  <h2>INTELLIGENCE &amp; SOFTWARE</h2>
+  <table>
+    <tr><th>ELEMENT</th><th>THE VISION</th><th>ENGINEERING STATUS</th></tr>
+    <tr><td class="el">Nexus OS</td><td class="claim">Custom AI OS, Android compatible</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>Working prototype: the OS screen’s deployment slider <i>is</i> the drum encoder; power, runtime and thermal readouts run on the real sim numbers. Android launcher compiles clean and ships as a signed APK (681 KB, v1.7). <b>v2.0 adds desktop mode</b> (3 windows + taskbar, keyboard-module trigger, brightness auto-caps 78% to hold the 3 W law; static-checked PASS). Honest level: launcher + OS layer over a host Android today.</td></tr>
+    <tr><td class="el">Security &amp; privacy</td><td class="claim">Biometric, encrypted, on-device AI</td><td class="eng"><span class="chip p">PROVEN IN SIM</span><br>The control link is LE Secure Connections with bonding — commands only from a bonded, encrypted peer; the controller owns safety and cuts the bay 30 s after link loss. <b>v2.0 security review:</b> 0 Critical, 5 High (pairing window unimplemented, moduleId OOB read, heartbeat reset by any connect, bay trust contract specified-but-unimplemented in frozen spine firmware), 4 Medium, 4 Low, 4 Informational. No hardcoded secrets. Biometrics are the host’s today.</td></tr>
+    <tr><td class="el">AI assistant</td><td class="claim">Hologram AI assistant, multimodal, learns you</td><td class="eng"><span class="chip g">GAP + ROUTE</span><br>Not built. Route: an on-device LLM on the host (3B–8B class, local-first — your standing preference) driving the OS layer; its hologram face rides on the hologram gap above.</td></tr>
+    <tr><td class="el">Own AI chip</td><td class="claim">Next-gen AI chip, local + cloud</td><td class="eng"><span class="chip d">DESIGNED</span><br><b>v2.0 branch:</b> custom 60×24 mm Nexus Spine SoM (i.MX 95-class — no standard SoM fits the 26 mm tray). FITS the 140×26 mm tray at 80.9% fill, 3.6 mm ≤ 4.5 mm. Power sim: full AI is <b>open-mode-only and burst-duty</b> (3.7 min to Tj 105 °C); folded derate = 2×A55 @800 MHz, NPU OFF. RAM: 8 GB on-SoM + micro-CAMM 8 GB = 16 GB. BLE frames unchanged; ESP32-S3 stays safety owner. v1.0 freeze untouched.</td></tr>
+    <tr><td class="el">Connectivity</td><td class="claim">6G ready, Wi-Fi 7, satellite, UWB</td><td class="eng"><span class="chip g">GAP + ROUTE</span><br>Today the host provides radios; the Nexus control link is BLE 5.3 (proven). Wi-Fi 7 / UWB radios are real parts. 6G: antennas are designable, but <b>the service does not exist to invent</b> — it stays a research line, labelled as such since v0.5.</td></tr>
+  </table>
+
+  <h2>PRODUCT LAYER</h2>
+  <table>
+    <tr><th>ELEMENT</th><th>THE VISION</th><th>ENGINEERING STATUS</th></tr>
+    <tr><td class="el">Price $999–$1,499</td><td class="claim">Flagship base price (target)</td><td class="eng"><span class="chip v">VISION ONLY</span><br>Commercial target from the posters. This project runs at ₹0, fully digital — no cost engineering is claimed or faked.</td></tr>
+    <tr><td class="el">Launch 2028–2030 + manufacturing</td><td class="claim">Roadmap phases 1–5, CNC + micro-fabrication</td><td class="eng"><span class="chip v">VISION ONLY</span><br>The poster's roadmap. Physical build steps stay parked under your digital-only rule; the bench plan (B1–B6, sim-tied pass criteria) exists as reference for whenever that rule changes.</td></tr>
+    <tr><td class="el">Future vision</td><td class="claim">AR contact lenses, holographic cloud, brain-computer interface</td><td class="eng"><span class="chip v">VISION ONLY</span><br>The horizon icons on your boards. Kept on the map exactly as you drew them; no route is claimed for these yet.</td></tr>
+  </table>
+
+  <h2>NEXT ENGINEERING TARGETS — IN ORDER</h2>
+  <div class="targets">
+    <ol>
+      <li><b>v2 thermal model</b> — the 2 W folded law does not survive the Ti/CFRP premium stack; a graphite-spreader 1-D model is the critical-path item before any v2 freeze (roadmap B8, RICE 1.25).</li>
+      <li><b>Tablet refinement</b> — interleave-film wear, drum-2 FPC fatigue, cam-interlock tolerances on the designed opposed dual-roll.</li>
+      <li><b>RF verification</b> — polymer cap windows near-field for BLE/Wi-Fi/satellite antennas (roadmap B6, RICE 0.70).</li>
+      <li><b>Bay trust contract in silicon</b> — the identify-before-power contract is specified in v2.0 but unimplemented in the frozen spine firmware (security F4); gate for any module merge.</li>
+      <li><b>Hologram research track</b> — standing: close the ~1000× volumetric gap on paper, invention-mandate rules. Eye safety is the hard blocker.</li>
+    </ol>
+  </div>
+
+  <div class="foot">
+    Still NOT-VERIFIED, openly carried into v2.1: (1) maker panel dynamic roll-cycle rating · (2) RF behaviour of the polymer cap windows · (3) any physical bench result — parked by the digital-only rule · (4) true volumetric holography and 6G service — research tracks · (5) the v2 thermal model for Ti/CFRP against the 2 W folded law · (6) interleave-film wear + drum-2 FPC fatigue on the tablet mechanism.<br><br>
+    Sources: design record v0.2–v1.7 (freeze v1.0; code v1.3–v1.7; validation v1.2), the v2.0 build (designs, checkers, compiles — DESIGN_v2_0/, independently verified 2×-deterministic), and Hari's five vision boards, all filed in the project archive. Map v2.0 built 2026-10-19 under the re-baseline: the posters are the target; engineering works toward them.
+  </div>
+</div>
+</body>
+</html>

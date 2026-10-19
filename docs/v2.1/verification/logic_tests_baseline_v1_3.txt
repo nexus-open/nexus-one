@@ -1,0 +1,14 @@
+PASS angle: silent below 1 deg change
+PASS angle: 0.5 deg change does not notify
+PASS angle: >=1 deg change notifies (x100 units)
+PASS cmd: unbonded write rejected
+PASS thermal: folded+storage slightly over -> dim request only (state 1, module kept)
+PASS thermal: folded+camera way over (>budget+0.5) -> module cut, state 2
+PASS thermal: folded+sensor within budget, state 0
+PASS thermal: open+camera over -> module cut, state 2
+PASS thermal: brightness cap 40% brings open+sensor inside 3 W
+PASS watchdog: alive at 29.9 s
+PASS watchdog: bay down at 30.1 s without heartbeat
+PASS calibrate: refused unless closed detent
+
+12 passed, 0 failed

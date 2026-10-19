@@ -1,0 +1,10 @@
+Sketch uses 388662 bytes (29%) of program storage space. Maximum is 1310720 bytes.
+Global variables use 56504 bytes (17%) of dynamic memory, leaving 271176 bytes for local variables. Maximum is 327680 bytes.
+
+[92mUsed library[0m [92mVersion[0m [90mPath[0m
+[93mWire[0m         3.3.12  [90m~/tools/arduino-data/packages/esp32/hardware/esp32/3.3.12/libraries/Wire[0m
+[93mUSB[0m          3.3.12  [90m~/tools/arduino-data/packages/esp32/hardware/esp32/3.3.12/libraries/USB[0m
+[93mFS[0m           3.3.12  [90m~/tools/arduino-data/packages/esp32/hardware/esp32/3.3.12/libraries/FS[0m
+
+[92mUsed platform[0m [92mVersion[0m [90mPath[0m
+[93mesp32:esp32[0m   3.3.12  [90m~/tools/arduino-data/packages/esp32/hardware/esp32/3.3.12[0m

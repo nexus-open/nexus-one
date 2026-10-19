@@ -1,0 +1,29 @@
+=== NEXUS ONE v2.0 cooling module — thermal model ===
+Baseline folded Rth (frozen v0.4): 8.8 K/W
+  re-derived cap @25 C ambient: 2.045 W  (frozen law: 2 W -> MATCH)
+  re-derived cap @35 C ambient: 0.909 W  (v1.2 report: 0.91 W -> MATCH)
+
+Blower air heat-carry @ 1.0 L/s, dT=10.0 K: 12.1 W
+  (>> phone heat load: air is NOT the bottleneck)
+
+Fin area: 192 cm2 -> R_conv = 1/(45.0*0.0192) = 1.16 K/W
+Module path R = R_contact 2.5 + R_conv 1.16 = 3.66 K/W
+
+Rth_folded: 8.8 K/W  ->  2.58 K/W  (parallel path)
+Sustained folded cap @25 C: 2.05 W  ->  6.97 W  (3.4x the 2 W law)
+Sustained folded cap @35 C: 0.91 W  ->  3.10 W  (3.4x hot-day)
+
+TEC alternative (rejected): 0.6 W in x COP 0.5 = 0.30 W pumped,
+  but 0.90 W must be rejected through the same tiny heatsink.
+  Blower path moves the FULL phone heat load (~7.0 W class) for 0.40 W.
+  Verdict: blower wins ~23x on moved-heat per watt.
+
+Module self-heat 0.6 W is exhausted by its own blower (series with the
+  exhaust stream, ~+5 K on exhaust air at 1 L/s: 0.6/12.1 of capacity).
+  Net effect on phone thermals remains strongly positive.
+
+NOTE: these caps are PHYSICS. The spine's firmware thermal-law table
+  (<=2 W folded) must be updated by the controller workstream to use them;
+  this workstream does not touch frozen firmware.
+  Design requirement: SoC heat must reach the bay-rail spreader
+  (NOT-VERIFIED — needs chassis thermal-strap design).

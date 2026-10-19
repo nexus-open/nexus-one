@@ -1,0 +1,3 @@
+OK: all 33 JS-referenced ids exist in the HTML.
+OK: no http/https external references.
+PASS

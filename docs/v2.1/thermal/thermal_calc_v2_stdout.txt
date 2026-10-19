@@ -1,0 +1,81 @@
+==============================================================================
+NEXUS ONE v2.1 - B8 v2 thermal model (1-D resistance network)
+==============================================================================
+
+[1] v1 BASELINE REPRODUCTION (frozen v0.4: Rth_folded = 8.8 K/W)
+  cap @25 C ambient: 2.045 W  (frozen law: 2.0 W -> MATCH)
+  cap @35 C ambient: 0.909 W  (v1.2 report: 0.91 W -> MATCH)
+  folded+batt-module @25 C: 1.55 W  (frozen law: 1.5 W -> MATCH; kappa calibrated)
+
+[2] v1 folded layer decomposition (calibrating R_gap to close 8.8 K/W)
+  R_jc (die->case)              :  0.800 K/W  [ASSUMPTION]
+  R_TIM (0.2mm/k=3, 15x15mm pad):  0.296 K/W  [computed]
+  R_spread (Al 6061, t=1.5mm)   :  1.410 K/W  [computed]
+  R_through (Al wall)           : 0.0014 K/W  [computed]
+  R_skin_air (h_c=6.0, h_r=5.26, A_eff=155cm2):  5.741 K/W  [computed]
+  R_gap (interior bundle)       :  0.551 K/W  [CALIBRATED to frozen 8.8]
+  TOTAL                         :  8.800 K/W  (frozen 8.8 -> MATCH)
+  NOTE: R_gap bundles the PC/ABS tray, internal air gaps, clamp contacts and
+  everything else not separately modelled. It is FIXED from here on.
+
+[2b] v1 open-mode check (frozen open law 3 W)
+  Rth_open = 6.02 K/W -> cap @25 C = 2.99 W (frozen law 3 W -> MATCH)
+
+[3] STACK COMPARISON - folded, @25 C ambient (skin limit 43 C)
+  stack                                  Rth  cap@25  cap@35   vs 2W law / 0.9W pocket
+  v1 frozen (6061 Al shell)            8.80K   2.05W   0.92W   2W:LEGAL  0.9W:legal (@35: legal)
+  v2 (a) Ti/CFRP as drawn             40.95K   0.44W   0.20W   2W:DEAD   0.9W:dead  (@35: dead )
+  v2 (b) hybrid Al spreader under CFRP  10.26K   1.75W   0.79W   2W:DEAD   0.9W:legal (@35: dead )
+  v2 (c) graphite ply in CFRP layup   14.39K   1.25W   0.56W   2W:DEAD   0.9W:legal (@35: dead )
+
+[3b] folded layer detail per v2 stack (@25 C)
+  v2 (a) Ti/CFRP as drawn:
+    R_jc 0.80 + R_tim 0.30 + R_gap 0.55 + R_c1 0.00 + R_spread 33.64 + R_thr 0.240 + R_skin_air 5.42 = 40.95 K/W
+  v2 (b) hybrid Al spreader under CFRP:
+    R_jc 0.80 + R_tim 0.30 + R_gap 0.55 + R_c1 0.50 + R_spread 2.45 + R_thr 0.241 + R_skin_air 5.42 = 10.26 K/W
+  v2 (c) graphite ply in CFRP layup:
+    R_jc 0.80 + R_tim 0.30 + R_gap 0.55 + R_c1 0.00 + R_spread 7.09 + R_thr 0.224 + R_skin_air 5.42 = 14.39 K/W
+
+[4] MODE-DEPENDENT LEGAL CAPS (W) per stack
+  stack                               fold25  fold35  open25  open35  batt25  batt35
+  v1 frozen (6061 Al shell)             2.05    0.92    2.99    1.34    1.55    0.42
+  v2 (a) Ti/CFRP as drawn               0.44    0.20    0.47    0.21    0.00    0.00
+  v2 (b) hybrid Al spreader under CFRP    1.75    0.79    2.34    1.05    1.25    0.29
+  v2 (c) graphite ply in CFRP layup     1.25    0.56    1.52    0.68    0.75    0.06
+
+[5] (e) COOLING-MODULE-STANDARD: bay path R_mod = 2.5 + 1.16 = 3.66 K/W
+    in parallel with each chassis folded path
+  stack                                Rth||  cap@25  cap@35   2W law?
+  v1 frozen (6061 Al shell)            2.58K   6.97W   3.11W   LEGAL
+  v2 (a) Ti/CFRP as drawn              3.36K   5.36W   2.38W   LEGAL
+  v2 (b) hybrid Al spreader under CFRP   2.70K   6.68W   2.98W   LEGAL
+  v2 (c) graphite ply in CFRP layup    2.92K   6.17W   2.75W   LEGAL
+  NOTE: R_contact 2.5 K/W was an ASSUMPTION against an Al bay rail; the v2
+  rail is Ti-6Al-4V (25x worse k) - rail-side spreading at the module clamp
+  is NOT in this number (see sensitivity + NOT-VERIFIED list).
+  Chassis thermal strap SoC->bay-rail also NOT-VERIFIED (v2.0 carried).
+
+[6] DOMINANT-TERM SENSITIVITY (folded cap @25 C, config b unless noted)
+  baseline (b): 1.75 W
+  R_c1 spreader->shell contact: 0.2->1.81W, 0.5->1.75W, 1->1.67W
+  R_gap interior bundle: 0.2->1.82W, 0.550879->1.75W, 1->1.68W
+  h_conv folded: 5->1.67W, 6->1.75W, 8->1.90W
+  k_cfrp_in-plane 5/7/10 (config a): 5->0.33W, 7->0.44W, 10->0.58W
+  Ti rail axial conduction (2 rails, 12mm2 each): 1144 K/W -> negligible vs shell spreading (not in network, checked)
+
+[7] JUNCTION TEMP SANITY at each folded cap (@25 C) + mass
+  v2 (a) Ti/CFRP as drawn: P=0.44W -> Tj=43C, skin hotspot=42C (limit 43), skin avg=27C, device 261.0g (+0.0g vs v2 261g)
+  v2 (b) hybrid Al spreader under CFRP: P=1.75W -> Tj=43C, skin hotspot=39C (limit 43), skin avg=35C, device 274.5g (+13.5g vs v2 261g)
+  v2 (c) graphite ply in CFRP layup: P=1.25W -> Tj=43C, skin hotspot=41C (limit 43), skin avg=32C, device 261.3g (+0.3g vs v2 261g)
+  Cu-spreader alternative (b, Cu k=400): mass +44.8 g -> 305.8 g total:
+  REJECTED - 44.8 g for -1.3 K/W vs Al is a bad trade (shown, not claimed).
+
+[8] VERDICT - which stacks are legal at which folded caps (@25 C / @35 C)
+  (a) v2 (a) Ti/CFRP as drawn         : highest legal folded 0.44 W @25 / 0.20 W @35
+  (b) v2 (b) hybrid Al spreader under CFRP: highest legal folded 1.75 W @25 / 0.79 W @35
+  (c) v2 (c) graphite ply in CFRP layup: highest legal folded 1.25 W @25 / 0.56 W @35
+  NO v2 stack keeps the 2 W folded law passively. Highest passive folded
+  cap: (b) 1.75 W @25 C. Pocket-Mode 0.9 W is legal folded @25 C
+  on (b) and (c) only; dead on (a); dead on ALL stacks folded at 35 C hot-day.
+  The 2 W folded law survives ONLY as cooling-module-gated (e): 5.4-6.7 W @25.
+==============================================================================

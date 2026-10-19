@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXUS OS — v0.8.1 Prototype (runs offline)</title>
+<style>
+:root{color-scheme:dark;--bg:#05080e;--panel:#0d1622;--line:#22344c;--cy:#4fd2ff;--tx:#eaf5ff;--mut:#93a9c2;--ok:#3ddc84;--warn:#ffb84d;--bad:#ff6b6b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 60% 0%,#0e2338,transparent 55%),var(--bg);font:15px system-ui,sans-serif;color:var(--tx)}
+main{max-width:1060px;margin:auto;padding:20px}h1{margin:0;font-size:clamp(24px,5vw,38px);letter-spacing:.05em}
+.tag{color:var(--cy);letter-spacing:.22em;font-size:11px}p{color:var(--mut);line-height:1.5}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-top:14px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:linear-gradient(145deg,#101b2a,#0a121d);border:1px solid var(--line);border-radius:16px;padding:16px}
+.stage{height:300px;display:grid;place-items:center;background:radial-gradient(ellipse,#14395c55,transparent 65%);border-radius:12px;overflow:hidden}
+.device{position:relative;height:210px;border:2px solid #56738d;border-radius:16px;background:linear-gradient(110deg,#101a29,#24344a 50%,#070c14);transition:width .25s ease;box-shadow:0 18px 50px #000a}
+.screen{position:absolute;inset:9px;border-radius:10px;background:linear-gradient(150deg,#071627,#1665a0 60%,#07101d);overflow:hidden;padding:10px;font-size:12px}
+.screen .clock{font-size:26px;font-weight:700}.apps{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}
+.app{background:#ffffff1c;border:1px solid #ffffff2e;border-radius:9px;padding:8px 2px;text-align:center;font-size:10px}
+.stripui{display:none;height:100%;flex-direction:column;justify-content:space-between;text-align:center}
+.holo{display:none;position:absolute;inset:0;place-items:center;font-size:15px;color:#aee9ff;text-shadow:0 0 12px var(--cy)}
+.layer{position:absolute;inset:18% 22%;border:1px solid #4fd2ff88;border-radius:50%;display:grid;place-items:center;transition:transform .12s}
+input[type=range]{width:100%}button{border:1px solid #34516d;background:#14243a;color:var(--tx);border-radius:10px;padding:9px 12px;font-weight:650;cursor:pointer}
+button[aria-pressed=true]{background:#0c3a54;border-color:var(--cy)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.stat{background:#0a1320;border:1px solid var(--line);border-radius:11px;padding:10px;margin-bottom:8px}
+.stat b{display:block;color:var(--cy);font-size:17px}.stat small{color:var(--mut)}
+.warn{color:var(--warn)}.bad{color:var(--bad)}.ok{color:var(--ok)}footer{color:#6d84a0;font-size:12px;margin-top:14px}
+</style></head>
+<body><main>
+<div class="tag">NEXUS OS · v0.8 PROTOTYPE · OFFLINE · NUMBERS FROM THE v0.4–v0.8 SIMULATORS</div>
+<h1>NEXUS ONE <span style="color:var(--cy)">∞</span></h1>
+<p>Drag the deployment slider — it is the drum encoder (AS5600) made visible. The screen width,
+power draw, runtime and thermal state all follow the real engineering numbers, not animation guesses.</p>
+<div class="grid">
+<section class="card">
+<h2 id="modeName">Stick mode</h2>
+<div class="stage"><div class="device" id="dev"><div class="screen" id="scr">
+<div class="stripui" id="strip"><div>NEXUS<br><small>♥ 72 bpm · 24°C</small></div><div><small>top zone: low priority</small></div><div>♪ Music<br>✉ 3 messages<div class="clock">10:24</div><div>Mon, 12 May</div></div></div>
+<div id="home"><div class="clock">10:24</div><div>Mon, 12 May · Nexus OS</div>
+<div class="apps"><div class="app">AI Core</div><div class="app">Camera</div><div class="app">Files</div><div class="app">Maps</div><div class="app">Calls</div><div class="app">Photos</div><div class="app">Modules</div><div class="app">Settings</div></div></div>
+<div class="holo" id="holo"><div class="layer" id="hl1">◉</div><div class="layer" id="hl2" style="inset:30% 34%">✦</div><div style="z-index:2">LIGHT-FIELD MODE<br><small>move your pointer — layers shift (parallax)</small></div></div>
+</div></div></div>
+<label>Deployment (drum angle <b id="deg">0°</b>) <input type="range" id="u" min="0" max="100" value="0"></label>
+<div class="row">
+<button id="bField" aria-pressed="false">Light-Field (Hologram) Mode</button>
+<button id="bBright" aria-pressed="false">Full Brightness</button>
+<button id="bPocket" aria-pressed="false">Pocket Mode</button>
+</div>
+<div class="row" role="group" aria-label="Modules">
+<button data-mod="battery" aria-pressed="false">+ Battery Module</button>
+<button data-mod="camera" aria-pressed="false">+ Camera Pro</button>
+<button data-mod="storage" aria-pressed="false">+ Storage 4TB</button>
+<button data-mod="sensor" aria-pressed="false">+ Sensor</button>
+</div>
+<p id="osnote">OS policy: ≤2 W folded, ≤3 W open sustained (thermal law from simulation). Storage/Camera modes are burst-duty.</p>
+</section>
+<aside class="card"><h2>Live engineering state</h2>
+<div class="stat"><b id="sW">0.85 W</b><small>Total draw (display + controller + modules)</small></div>
+<div class="stat"><b id="sRun">16.1 h</b><small>Runtime at this draw (battery fitted shown below)</small></div>
+<div class="stat"><b id="sBatt">13.7 Wh</b><small>Battery capacity (internal + modules)</small></div>
+<div class="stat"><b id="sTherm">Within limits</b><small id="sThermSub">Thermal budget for this pose</small></div>
+<div class="stat"><b id="sScr">28.0 mm</b><small>Visible screen width (real wrap geometry)</small></div>
+<p>Supersedes the Stage-1 simulator: same three-mode idea, now driven by the verified
+ROLL v0.6 geometry, the v0.7 module specs and the v0.8 board power model.</p>
+</aside>
+</div>
+<footer>PROJECT NEXUS ONE · Nexus OS v0.8 prototype · Simulation only — no hardware exists yet. Power/thermal figures are estimates from the project simulators.</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id), uEl=$('u');
+let mods={battery:false,camera:false,storage:false,sensor:false}, bright=false, field=false, pocket=false;
+const MODW={camera:2.5,storage:1.2,sensor:0.3};
+function fmt(n,d=1){return n.toFixed(d)}
+function render(){
+  const u=uEl.value/100, F=28+(58.9-28)*u;
+  const visW=F+12.6*u*u*u; // UI width: front flat + arc contribution as it flattens (28 mm stick -> 71.5 mm open, v0.6 wrap math)
+  $('dev').style.width=(54+ (Math.min(visW,71.5)/71.5)*250)+'px';
+  $('deg').textContent=Math.round(u*220)+'°';
+  $('strip').style.display=u<0.55?'flex':'none';
+  $('home').style.display=u<0.55?'none':'block';
+  $('holo').style.display=field&&u>=0.99?'grid':'none';
+  $('modeName').textContent=field&&u>=0.99?'Light-Field Mode':u<0.05?'Stick mode':u>=0.99?'Smartphone mode':'Expanding… ('+Math.round(u*100)+'%)';
+  // power model (v0.8 board checker)
+  let disp=0.6+(2.6-0.6)*u*(bright?1:0.62); if(u<0.05&&!bright)disp=0.6;
+  let draw=disp+(u>0.05?0.35:0.1);
+  for(const k in MODW) if(mods[k]) draw+=MODW[k];
+  if(pocket&&u<0.05){ draw=Math.min(draw,0.91); } // v1.2 pocket thermal cap (hot-day 0.9 W)
+  const batt=13.7+(mods.battery?10:0);
+  const limit=u>=0.9?3.0:(mods.battery?1.5:2.0);
+  const over=draw>limit;
+  $('sW').textContent=fmt(draw,2)+' W';
+  $('sRun').textContent=fmt(batt/draw,1)+' h';
+  $('sBatt').textContent=fmt(batt,1)+' Wh'+(mods.battery?' (incl. module)':'');
+  $('sScr').textContent=fmt(Math.min(visW,71.5),1)+' mm';
+  const th=$('sTherm'); th.textContent=over?'OVER THERMAL BUDGET':'Within limits';
+  th.className=over?'bad':'ok';
+  $('sThermSub').textContent='Budget '+fmt(limit,1)+' W for this pose'+(mods.battery&&u<0.9?' (battery module covers the back)':'')+(over?' — OS would dim the display / pause the module':'');
+  $('osnote').style.color=over?'var(--warn)':'';
+}
+uEl.addEventListener('input',render);
+$('bPocket').onclick=e=>{pocket=!pocket;e.target.setAttribute('aria-pressed',pocket);render()};
+$('bBright').onclick=e=>{bright=!bright;e.target.setAttribute('aria-pressed',bright);render()};
+$('bField').onclick=e=>{field=!field;e.target.setAttribute('aria-pressed',field);if(field){uEl.value=100}render()};
+document.querySelectorAll('[data-mod]').forEach(b=>b.onclick=()=>{const k=b.dataset.mod;mods[k]=!mods[k];b.setAttribute('aria-pressed',mods[k]);render()});
+document.addEventListener('pointermove',e=>{if(!field)return;const dx=(e.clientX/innerWidth-.5)*14,dy=(e.clientY/innerHeight-.5)*10;
+  $('hl1').style.transform=`translate(${dx}px,${dy}px)`;$('hl2').style.transform=`translate(${-dx*1.6}px,${-dy*1.6}px)`});
+render();
+</script>
+</body></html>

@@ -1,0 +1,36 @@
+========================================================================
+TABLET CONCEPT COMPARISON (all numbers computed, assumptions labelled)
+========================================================================
+
+(b) SINGLE WIDE PANEL, 2.28-turn wrap:
+    extra pull over v1.0: +4.2 N (mu=0.15 ASSUMPTION)
+    stick thickness needed: 27.9 mm (vs 22)
+    leading-bar travel: 102.2 mm (vs 30.9 validated)
+    inter-layer contact: OLED emissive face rubs panel back over 2.3 turns -> wear risk (ASSUMPTION: no interleaving film)
+    VERDICT: REJECTED - thickness +6mm, 102mm cantilever bar (guide stiffness
+             ~1/L^3 vs validated 30.9mm), inter-layer display wear. Friction alone
+             (+4.2 N) is tolerable; packaging and wear are not.
+
+(c) TWO PANELS side by side:
+    center seam: 3.0 mm (two sealed edges) vs <0.5 mm target -> FAILS target
+    stick width: 44 mm (vs 34)
+    mass: ~341 g (+100)
+    VERDICT: FEASIBLE but REJECTED - 3 mm seam kills the poster's 'single
+             continuous display' claim; heaviest option; dual-drum sync needed.
+
+(a') OPPOSED DUAL-ROLL (WINNER): one continuous panel, drum1 (+Y, phone, v1.0
+    mechanism untouched) + drum2 (-Y, tablet reserve 71.3 mm, up to 1.0 turn):
+    drum2 extra pull over v1.0: +0.9 N -> total ~2.9 N (manual, in 2-4 N class)
+    max wrap: drum1 half-turn (validated), drum2 one full turn
+    interleave film 0.05 mm on drum2's outer turn (display-face protection)
+    stick: 190 x 46 x 22 mm (length +6 for drum2 FPC head-cap pocket)
+    mass: ~329 g (+88)
+    seam: 0 mm - 'single continuous display' claim SURVIVES
+    VERDICT: WINNER - only concept that keeps one continuous panel at R8
+             everywhere with no seam, no thickness growth, manual operation.
+
+========================================================================
+SELECTION: (a') opposed dual-roll. (b) rejected on packaging/wear,
+(c) rejected on the seam claim + mass. All friction numbers use the
+v1.0-validated baseline + mu=0.15 ASSUMPTION for extra wrap only.
+========================================================================

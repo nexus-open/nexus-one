@@ -1,0 +1,32 @@
+==============================================================================
+NEXUS ONE v2.0 MATERIALS STUDY — mass delta (structural parts only)
+==============================================================================
+Part                                           v1 [g]   v2 [g]  delta [g]
+------------------------------------------------------------------------------
+S01 Spine back shell (v1: 6061 Al / v2: CFRP)    23.38    13.85      -9.52
+S01 PC antenna inserts x2 (both versions)        0.83     0.83      +0.00
+M08 Guide rails x2 (v1: 6061 Al / v2: Ti64)     11.92    19.55      +7.64
+B01 Module rail dovetail (v1: 6061 Al / v2: Ti64)    26.83    44.02     +17.19
+S04 Spine tray (PC/ABS, both versions)          11.42    11.42      +0.00
+M01 Drum (POM, both versions)                   28.14    28.14      +0.00
+M04 Leading bar (6061 Al, both versions)         7.24     7.24      +0.00
+S02 Tail end cap 16x34x22 (PC/ABS, both)         4.82     4.82      +0.00
+S03 Head end cap 8x34x22 (PC/ABS, both)          2.41     2.41      +0.00
+ACC Ceramic accents 2x 60x10x1 (v2 only, NEW)     0.00     4.68      +4.68
+------------------------------------------------------------------------------
+STRUCTURAL SUBTOTAL                            116.98   136.96     +19.98
+
+Frozen v1.0 device total (baseline) :    241.0 g
+Structural-part mass delta (v2-v1)   :   +19.98 g
+Projected v2.0 device total         :    261.0 g
+Delta vs 241 g baseline             : +19.98 g  (+8.3 %)
+
+Largest contributors:
+  B01 Module rail dovetail (v1: 6061 Al / v2: Ti64)  +17.19 g
+  S01 Spine back shell (v1: 6061 Al / v2: CFRP)   -9.52 g
+  M08 Guide rails x2 (v1: 6061 Al / v2: Ti64)    +7.64 g
+  ACC Ceramic accents 2x 60x10x1 (v2 only, NEW)   +4.68 g
+
+Note: end caps (S02/S03) and drum (M01) are UNCHANGED by design
+(RF windows + low-friction roll surface). Ceramic accents are v2-only adds.
+==============================================================================

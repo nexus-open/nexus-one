@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NEXUS OS — Desktop Mode v2.0 Prototype (runs offline)</title>
+<style>
+:root{color-scheme:dark;--bg:#05080e;--panel:#0d1622;--line:#22344c;--cy:#4fd2ff;--tx:#eaf5ff;--mut:#93a9c2;--ok:#3ddc84;--warn:#ffb84d;--bad:#ff6b6b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 60% 0%,#0e2338,transparent 55%),var(--bg);font:15px system-ui,sans-serif;color:var(--tx)}
+main{max-width:1060px;margin:auto;padding:20px}h1{margin:0;font-size:clamp(24px,5vw,38px);letter-spacing:.05em}
+.tag{color:var(--cy);letter-spacing:.22em;font-size:11px}p{color:var(--mut);line-height:1.5}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-top:14px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:linear-gradient(145deg,#101b2a,#0a121d);border:1px solid var(--line);border-radius:16px;padding:16px}
+.stage{height:300px;display:grid;place-items:center;background:radial-gradient(ellipse,#14395c55,transparent 65%);border-radius:12px;overflow:hidden}
+.device{position:relative;height:210px;border:2px solid #56738d;border-radius:16px;background:linear-gradient(110deg,#101a29,#24344a 50%,#070c14);transition:width .25s ease;box-shadow:0 18px 50px #000a}
+.screen{position:absolute;inset:9px;border-radius:10px;background:linear-gradient(150deg,#071627,#1665a0 60%,#07101d);overflow:hidden;padding:10px;font-size:12px}
+.screen .clock{font-size:26px;font-weight:700}.apps{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:10px}
+.app{background:#ffffff1c;border:1px solid #ffffff2e;border-radius:9px;padding:8px 2px;text-align:center;font-size:10px}
+.stripui{display:none;height:100%;flex-direction:column;justify-content:space-between;text-align:center}
+.holo{display:none;position:absolute;inset:0;place-items:center;font-size:15px;color:#aee9ff;text-shadow:0 0 12px var(--cy)}
+.layer{position:absolute;inset:18% 22%;border:1px solid #4fd2ff88;border-radius:50%;display:grid;place-items:center;transition:transform .12s}
+/* desktop mode */
+#dsk{display:none;position:absolute;inset:0;background:linear-gradient(140deg,#0a1a2e,#123a5e 55%,#0a1424);font-size:11px}
+#wall{position:absolute;inset:0 0 26px 0;background:radial-gradient(circle at 75% 20%,#1c5a8a66,transparent 50%)}
+.window{position:absolute;background:#0c1626ee;border:1px solid #3a5a7d;border-radius:8px;box-shadow:0 8px 24px #000c;min-width:120px;min-height:70px;overflow:hidden}
+.tbar{display:flex;align-items:center;gap:6px;background:#16283e;padding:4px 6px;cursor:move;user-select:none;font-weight:650;font-size:10px}
+.tbar .sp{flex:1}.wbtn{border:1px solid #3a5a7d;background:#0e1c30;color:var(--tx);border-radius:5px;padding:1px 6px;font-size:10px;cursor:pointer}
+.winbody{padding:6px 8px;height:calc(100% - 26px);overflow:auto;white-space:pre-wrap;font-family:ui-monospace,monospace;font-size:10px;line-height:1.45}
+.rz{position:absolute;right:0;bottom:0;width:14px;height:14px;cursor:nwse-resize;background:linear-gradient(135deg,transparent 50%,#4fd2ff88 50%)}
+#taskbar{position:absolute;left:0;right:0;bottom:0;height:26px;background:#0a1424f2;border-top:1px solid #2a4560;display:flex;align-items:center;gap:6px;padding:0 8px;font-size:10px}
+#taskbar .logo{color:var(--cy);font-weight:800;letter-spacing:.08em}
+.tbbtn{border:1px solid #2a4560;background:#12233a;color:var(--tx);border-radius:5px;padding:2px 7px;font-size:10px;cursor:pointer}
+.tbbtn[aria-pressed=true]{background:#0c3a54;border-color:var(--cy)}
+.pill{border:1px solid #2a4560;border-radius:20px;padding:1px 8px;font-size:10px;color:var(--mut)}
+.pill b{color:var(--ok)}#tb-clock{margin-left:auto;color:var(--tx);font-variant-numeric:tabular-nums}
+.mbar{height:7px;background:#13243a;border-radius:4px;margin:2px 0 6px;overflow:hidden}
+.mbar i{display:block;height:100%;background:linear-gradient(90deg,#2e7fb8,var(--cy));border-radius:4px}
+#kbnotice{display:none;margin-top:8px;border:1px solid var(--warn);color:var(--warn);border-radius:10px;padding:8px 10px;font-size:12px}
+#capnote{display:none;margin-top:8px;color:var(--mut);font-size:12px}
+input[type=range]{width:100%}button{border:1px solid #34516d;background:#14243a;color:var(--tx);border-radius:10px;padding:9px 12px;font-weight:650;cursor:pointer}
+button[aria-pressed=true]{background:#0c3a54;border-color:var(--cy)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.stat{background:#0a1320;border:1px solid var(--line);border-radius:11px;padding:10px;margin-bottom:8px}
+.stat b{display:block;color:var(--cy);font-size:17px}.stat small{color:var(--mut)}
+.warn{color:var(--warn)}.bad{color:var(--bad)}.ok{color:var(--ok)}footer{color:#6d84a0;font-size:12px;margin-top:14px}
+</style></head>
+<body><main>
+<div class="tag">NEXUS OS · DESKTOP MODE v2.0 PROTOTYPE · OFFLINE · NUMBERS FROM THE v0.4–v0.8 SIMULATORS</div>
+<h1>NEXUS ONE <span style="color:var(--cy)">∞</span> — LAPTOP</h1>
+<p>Dock the <b>keyboard module</b> (simulates the BLE bay characteristic reporting
+module ID <b>6</b>) and drag deployment past 90%: Nexus OS switches to landscape
+desktop mode — draggable, resizable windows and a taskbar, all telemetry still
+driven by the real engineering numbers.</p>
+<div class="grid">
+<section class="card">
+<h2 id="modeName">Stick mode</h2>
+<div class="stage"><div class="device" id="dev"><div class="screen" id="scr">
+<div class="stripui" id="strip"><div><div class="clock">10:24</div><div>Mon, 12 May</div></div><div>♪ Music<br>✉ 3 messages<br>♥ 72 bpm</div><div>NEXUS</div></div>
+<div id="home"><div class="clock">10:24</div><div>Mon, 12 May · Nexus OS</div>
+<div class="apps"><div class="app">AI Core</div><div class="app">Camera</div><div class="app">Files</div><div class="app">Maps</div><div class="app">Calls</div><div class="app">Photos</div><div class="app">Modules</div><div class="app">Settings</div></div></div>
+<div class="holo" id="holo"><div class="layer" id="hl1">◉</div><div class="layer" id="hl2" style="inset:30% 34%">✦</div><div style="z-index:2">LIGHT-FIELD MODE<br><small>move your pointer — layers shift (parallax)</small></div></div>
+<div id="dsk"><div id="wall"></div>
+<div class="window" id="win-term" style="left:4%;top:6%;width:52%;height:58%;z-index:11">
+<div class="tbar"><span>◈ Terminal</span><span class="sp"></span><button class="wbtn" data-w="win-term" data-a="min">–</button><button class="wbtn" data-w="win-term" data-a="close">×</button></div>
+<div class="winbody" id="term-body">nexus&gt; </div><div class="rz"></div></div>
+<div class="window" id="win-files" style="left:50%;top:12%;width:44%;height:54%;z-index:12">
+<div class="tbar"><span>▤ Files</span><span class="sp"></span><button class="wbtn" data-w="win-files" data-a="min">–</button><button class="wbtn" data-w="win-files" data-a="close">×</button></div>
+<div class="winbody">/nexus/modules/
+  keyboard_kb6.uf2      31 g docked
+/nexus/os/
+  desktop_mode.conf     trigger: bay_id==6
+/nexus/power/
+  thermal_law.json      folded 2.0 W / open 3.0 W
+<span style="color:var(--mut)">(demo listing — prototype)</span></div><div class="rz"></div></div>
+<div class="window" id="win-sys" style="left:22%;top:34%;width:56%;height:56%;z-index:13">
+<div class="tbar"><span>◔ System Monitor</span><span class="sp"></span><button class="wbtn" data-w="win-sys" data-a="min">–</button><button class="wbtn" data-w="win-sys" data-a="close">×</button></div>
+<div class="winbody">display   <b id="mon-disp">0.00 W</b><div class="mbar"><i id="mon-disp-b" style="width:0%"></i></div>
+controller <b id="mon-ctl">0.00 W</b><div class="mbar"><i id="mon-ctl-b" style="width:0%"></i></div>
+keyboard   <b id="mon-kb">0.00 W</b><div class="mbar"><i id="mon-kb-b" style="width:0%"></i></div>
+total vs 3.0 W budget<div class="mbar"><i id="mon-tot-b" style="width:0%"></i></div></div><div class="rz"></div></div>
+<div id="taskbar"><span class="logo">◈ NEXUS</span>
+<button class="tbbtn" id="tb-term" aria-pressed="true">Terminal</button>
+<button class="tbbtn" id="tb-files" aria-pressed="true">Files</button>
+<button class="tbbtn" id="tb-sys" aria-pressed="true">System</button>
+<span class="pill" id="tb-kb">no module</span>
+<span class="pill" id="tb-therm"><b>OK</b></span>
+<span id="tb-clock">--:--</span></div>
+</div>
+</div></div></div>
+<label>Deployment (drum angle <b id="deg">0°</b>) <input type="range" id="u" min="0" max="100" value="0"></label>
+<div class="row">
+<button id="bField" aria-pressed="false">Light-Field 3D Mode</button>
+<button id="bBright" aria-pressed="false">Full Brightness</button>
+</div>
+<div class="row" role="group" aria-label="Modules">
+<button data-mod="battery" aria-pressed="false">+ Battery Module</button>
+<button data-mod="camera" aria-pressed="false">+ Camera Pro</button>
+<button data-mod="storage" aria-pressed="false">+ Storage 4TB</button>
+<button data-mod="sensor" aria-pressed="false">+ Sensor</button>
+<button data-mod="keyboard" aria-pressed="false">⌨ Keyboard Module (ID 6)</button>
+</div>
+<div id="kbnotice">⌨ Keyboard docked — CH_BAY reports id 6, powered. Unroll to ≥90% deployment for desktop mode.</div>
+<div id="capnote"></div>
+<p id="osnote">OS policy: ≤2 W folded, ≤1.5 W folded with battery module, ≤3 W open (thermal law from simulation). In desktop mode the OS caps display brightness so draw stays ≤3 W.</p>
+</section>
+<aside class="card"><h2>Live engineering state</h2>
+<div class="stat"><b id="sW">0.85 W</b><small>Total draw (display + controller + modules)</small></div>
+<div class="stat"><b id="sRun">16.1 h</b><small>Runtime at this draw (battery fitted shown below)</small></div>
+<div class="stat"><b id="sBatt">13.7 Wh</b><small>Battery capacity (internal + modules)</small></div>
+<div class="stat"><b id="sTherm">Within limits</b><small id="sThermSub">Thermal budget for this pose</small></div>
+<div class="stat"><b id="sScr">28.0 mm</b><small>Visible screen width (real wrap geometry)</small></div>
+<div class="stat"><b id="sBay">[0, 0, 0, 0]</b><small>BLE bay characteristic (id, power, mA lo/hi)</small></div>
+<p>Desktop trigger: CH_BAY id = 6 (keyboard) with power = 1, plus drum ≥90%.
+Same v0.8 power/thermal model as the phone prototype — keyboard adds 0.5 W.</p>
+</aside>
+</div>
+<footer>PROJECT NEXUS ONE · Nexus OS desktop-mode v2.0 prototype · Simulation only — no hardware exists yet. Power/thermal figures are estimates from the project simulators.</footer>
+</main>
+<script>
+const $=id=>document.getElementById(id), uEl=$('u');
+let mods={battery:false,camera:false,storage:false,sensor:false,keyboard:false}, bright=false, field=false;
+const MODW={camera:2.5,storage:1.2,sensor:0.3,keyboard:0.5};
+function fmt(n,d=1){return n.toFixed(d)}
+function render(){
+  const u=uEl.value/100, F=28+(58.9-28)*u;
+  const visW=F+12.6*u*u*u; // UI width: front flat + arc contribution as it flattens (28 mm stick -> 71.5 mm open, v0.6 wrap math)
+  $('dev').style.width=(54+(Math.min(visW,71.5)/71.5)*250)+'px';
+  $('deg').textContent=Math.round(u*220)+'°';
+  const kb=mods.keyboard; // spine auto-powers the docked keyboard: CH_BAY = {6,1,100,0}
+  const desktop=kb&&u>=0.9;
+  $('strip').style.display=(!desktop&&u<0.55)?'flex':'none';
+  $('home').style.display=(!desktop&&u<0.55)?'none':'block';
+  $('home').style.display=desktop?'none':$('home').style.display;
+  $('holo').style.display=(field&&u>=0.99&&!desktop)?'grid':'none';
+  $('dsk').style.display=desktop?'block':'none';
+  $('modeName').textContent=desktop?'Desktop mode — laptop':(field&&u>=0.99?'Light-Field Mode':u<0.05?'Stick mode':u>=0.99?'Smartphone mode':'Expanding… ('+Math.round(u*100)+'%)');
+  $('kbnotice').style.display=(kb&&!desktop)?'block':'none';
+  // power model (v0.8 board checker) + keyboard 0.5 W + desktop brightness cap
+  const ctl=u>0.05?0.35:0.1;
+  let modSum=0; for(const k in MODW) if(mods[k]) modSum+=MODW[k];
+  let mUser=bright?1:0.62, capped=false, capPct=0;
+  if(desktop){
+    const dispAllowed=3.0-ctl-(modSum-MODW.keyboard)-MODW.keyboard; // open budget minus everything but display
+    const mCap=(dispAllowed-0.6)/(2.0*u);
+    if(mCap<mUser){mUser=Math.max(mCap,0.05);capped=true;capPct=Math.round(mUser*100);}
+  }
+  let disp=0.6+(2.6-0.6)*u*mUser; if(u<0.05&&!bright)disp=0.6;
+  const draw=disp+ctl+modSum;
+  const batt=13.7+(mods.battery?10:0);
+  const limit=u>=0.9?3.0:(mods.battery?1.5:2.0);
+  const over=draw>limit+1e-9;
+  $('sW').textContent=fmt(draw,2)+' W';
+  $('sRun').textContent=fmt(batt/draw,1)+' h';
+  $('sBatt').textContent=fmt(batt,1)+' Wh'+(mods.battery?' (incl. module)':'');
+  $('sScr').textContent=fmt(Math.min(visW,71.5),1)+' mm';
+  $('sBay').textContent=kb?'[6, 1, 100, 0]':'[0, 0, 0, 0]';
+  const th=$('sTherm'); th.textContent=over?'OVER THERMAL BUDGET':'Within limits';
+  th.className=over?'bad':'ok';
+  $('sThermSub').textContent='Budget '+fmt(limit,1)+' W for this pose'+(mods.battery&&u<0.9?' (battery module covers the back)':'')+(over?' — OS would dim the display / pause the module':'');
+  $('osnote').style.color=over?'var(--warn)':'';
+  $('capnote').style.display=capped?'block':'none';
+  if(capped)$('capnote').textContent='Desktop thermal policy: display brightness capped at '+capPct+'% so total draw stays ≤ 3.0 W (firmware budgetState = 1, "ask OS to dim").';
+  // desktop live content
+  if(desktop){
+    $('term-body').textContent='nexus> drum '+Math.round(u*220)+'° open | CH_BAY [6,1,100,0]\nnexus> mode DESKTOP | draw '+fmt(draw,2)+' W / 3.0 W\nnexus> thermal '+(over?'OVER BUDGET':'within limits')+(capped?' | brightness '+capPct+'%':'')+'\nnexus> ';
+    $('mon-disp').textContent=fmt(disp,2)+' W'; $('mon-disp-b').style.width=Math.min(disp/3*100,100)+'%';
+    $('mon-ctl').textContent=fmt(ctl,2)+' W'; $('mon-ctl-b').style.width=Math.min(ctl/3*100,100)+'%';
+    $('mon-kb').textContent=fmt(MODW.keyboard,2)+' W'; $('mon-kb-b').style.width=Math.min(MODW.keyboard/3*100,100)+'%';
+    $('mon-tot-b').style.width=Math.min(draw/3*100,100)+'%';
+    $('mon-tot-b').style.background=over?'var(--bad)':'';
+    $('tb-kb').innerHTML='KB:<b>ID6</b>';
+    $('tb-therm').innerHTML=over?'<b style="color:var(--bad)">OVER</b>':'<b>OK</b> 3.0W';
+  } else {
+    $('tb-kb').textContent=kb?'KB:ID6 (folded)':'no module';
+    $('tb-therm').innerHTML='<b>—</b>';
+  }
+  tickClock();
+}
+function tickClock(){const d=new Date(),p=n=>String(n).padStart(2,'0');$('tb-clock').textContent=p(d.getHours())+':'+p(d.getMinutes());}
+setInterval(tickClock,1000);
+// window drag / resize / min / close
+let zTop=20,dragEl=null,rsEl=null,sx=0,sy=0,ox=0,oy=0,ow=0,oh=0;
+document.querySelectorAll('.window').forEach(w=>{
+  const bar=w.querySelector('.tbar');
+  bar.addEventListener('pointerdown',e=>{if(e.target.closest('.wbtn'))return;dragEl=w;w.style.zIndex=++zTop;sx=e.clientX;sy=e.clientY;const r=w.getBoundingClientRect(),p=$('dsk').getBoundingClientRect();ox=r.left-p.left;oy=r.top-p.top;try{bar.setPointerCapture(e.pointerId)}catch(_){}});
+  bar.addEventListener('pointermove',e=>{if(dragEl!==w)return;w.style.left=(ox+e.clientX-sx)+'px';w.style.top=(oy+e.clientY-sy)+'px';});
+  bar.addEventListener('pointerup',()=>{dragEl=null;});
+  const rz=w.querySelector('.rz');
+  rz.addEventListener('pointerdown',e=>{e.stopPropagation();rsEl=w;w.style.zIndex=++zTop;sx=e.clientX;sy=e.clientY;const r=w.getBoundingClientRect();ow=r.width;oh=r.height;try{rz.setPointerCapture(e.pointerId)}catch(_){}});
+  rz.addEventListener('pointermove',e=>{if(rsEl!==w)return;w.style.width=Math.max(120,ow+e.clientX-sx)+'px';w.style.height=Math.max(70,oh+e.clientY-sy)+'px';});
+  rz.addEventListener('pointerup',()=>{rsEl=null;});
+});
+const tbMap={'win-term':'tb-term','win-files':'tb-files','win-sys':'tb-sys'};
+document.querySelectorAll('.wbtn').forEach(b=>b.addEventListener('click',()=>{
+  const w=$(b.dataset.w),tb=$(tbMap[b.dataset.w]);
+  if(b.dataset.a==='min'||b.dataset.a==='close'){w.style.display='none';tb.setAttribute('aria-pressed','false');}
+}));
+Object.entries(tbMap).forEach(([wid,tid])=>{$(tid).addEventListener('click',()=>{
+  const w=$(wid),tb=$(tid),vis=w.style.display!=='none';
+  w.style.display=vis?'none':'block';tb.setAttribute('aria-pressed',String(!vis));
+  if(!vis)w.style.zIndex=++zTop;
+});});
+uEl.addEventListener('input',render);
+$('bBright').onclick=e=>{bright=!bright;e.target.setAttribute('aria-pressed',bright);render()};
+$('bField').onclick=e=>{field=!field;e.target.setAttribute('aria-pressed',field);if(field){uEl.value=100}render()};
+document.querySelectorAll('[data-mod]').forEach(b=>b.onclick=()=>{const k=b.dataset.mod;mods[k]=!mods[k];b.setAttribute('aria-pressed',mods[k]);render()});
+document.addEventListener('pointermove',e=>{if(!field)return;const dx=(e.clientX/innerWidth-.5)*14,dy=(e.clientY/innerHeight-.5)*10;
+  $('hl1').style.transform='translate('+dx+'px,'+dy+'px)';$('hl2').style.transform='translate('+(-dx*1.6)+'px,'+(-dy*1.6)+'px)'});
+render();
+</script>
+</body></html>

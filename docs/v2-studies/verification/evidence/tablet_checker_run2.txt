@@ -1,0 +1,11 @@
+========================================================================
+TABLET POSE CHECKER — opposed dual-roll (v0.6 contract, two sides)
+========================================================================
+drum1_phone: err=7.11e-15 mm theta=[1.571, 3.142] travel=30.93 mm visible=43.50 mm -> PASS
+drum2_tablet: err=1.42e-14 mm theta=[1.571, 6.283] travel=58.73 mm visible=71.30 mm -> PASS
+phone screen: 162.9 x 71.5 mm (target 71.5)
+tablet screen: 162.9 x 142.8 mm (target 142.8)
+device: 190 x 46 x 22 mm (v1.0: 183.9 x 34 x 22)
+mass: 241 + 88 = 329 g
+OVERALL: PASS
+========================================================================

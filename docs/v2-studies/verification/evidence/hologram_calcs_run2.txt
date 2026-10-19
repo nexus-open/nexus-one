@@ -1,0 +1,61 @@
+======================================================================
+NEXUS ONE v2.0 — HOLOGRAM SYSTEM CALCS
+======================================================================
+
+--- 1. LIGHT-FIELD v2 ---
+panel 2400x1080 px, 8 views -> 300 px/view horizontal
+sub-pixel pitch 67.9 um -> lenticule pitch 0.543 mm (47 LPI; real lenticular films: 10-100 LPI -> makeable)
+  latency IR camera capture @120fps (8.3 ms frame)     8.3 ms
+  latency pupil/face detection (DPU class)             3.0 ms
+  latency view-pair synthesis + interleave @60Hz       6.0 ms
+  latency display refresh-to-photon (60 Hz)            8.3 ms
+  TOTAL eye-to-photon latency: 25.6 ms
+  tracking loop 120 Hz; 3D view-update rate = display refresh 60 Hz
+  view-switching dead time per head-move: ~26 ms (~3.1 tracking frames)
+  latency headroom vs 50 ms motion-sickness/annoyance bound: 24.4 ms margin
+  power IR camera (OV2312 global-shutter class)    0.20 W
+  power 850 nm IR illuminator, pulsed              0.25 W
+  power tracking DSP (pupil solve + view render)   0.25 W
+  TOTAL eye-tracking active: 0.70 W
+  battery cost per hour of 3D mode: 0.70 Wh (5.1% of the 13.7 Wh pack)
+  lenticular sheet 163x74 mm vs stick width 34 mm: cannot fold onto stick -> carry-case sleeve (v0.6 finding, restated)
+
+--- 2. AIRSCREEN PROJECTOR MODULE ---
+  power TI DLP pico engine class (50-100 lm)     4.0 W
+  power ultrasonic atomiser disc (throttled)     2.0 W
+  power MCU + drivers + status LEDs              0.4 W
+  module total 6.4 W / 10 W bay budget (64% used, 3.6 W headroom)
+   5-min session -> 5.0 ml reservoir
+  10-min session -> 10.0 ml reservoir
+  15-min session -> 15.0 ml reservoir
+  30-min session -> 30.0 ml reservoir
+  v0.5 baseline check: 5 ml / 60 ml/h * 60 = 5.0 min  [matches 5 min]
+  15-min tank 50x20x15 mm = 15.0 ml (fits module envelope)
+  image 120x70 mm at 150 mm throw; mist plane flatness tol +/-1.5 mm, projector tilt tol +/-1.0 deg (keystone-corrected)
+  stick-side during projection: 2.5 W <= 3 W OPEN law: HOLDS (module heat vents via own shell)
+  total system draw during projection: 8.9 W (stick 2.5 + module 6.4)
+  15-min session energy from 13.7 Wh pack: 2.23 Wh (16.2% of pack)
+
+--- 3. VOLUMETRIC (PHOTOPHORETIC TRAP ARRAY) ---
+wireframe baseline (v0.5 case, recomputed):
+  2000 voxels, 2.0 mm avg travel @ 0.5 m/s + 0.1 ms dwell
+  -> 4.10 ms/voxel = 244 voxels/s per trap
+  required voxel rate @24fps: 48,000 voxels/s
+  parallel traps needed: 197  [v0.5 said 192 — confirmed, delta is dwell term]
+  gap vs demonstrated 1-trap system: 197x
+poster claim: filled 30 mm globe @ 1.2 mm voxel pitch:
+  voxels/frame 15,625; required @24fps 375,000 voxels/s
+  2.50 ms/voxel = 400 voxels/s per trap -> traps needed: 938
+  gap vs demonstrated 1-trap system: 938x
+optical power: 938 traps x 50 mW + 1 W paint = 47.9 W optical -> wall-plug ~192 W @ 25% efficiency
+  vs phone thermal law (2 W folded): 96x over — needs bench/lab power, not a phone
+eye-safety sanity: per-trap 50 mW beam vs ~2 mW Class-1-class accessible limit -> ~25x over per beam, 938 beams in an open volume
+  -> open-air operation lands in Class 3B/4 territory: HARD BLOCKER; requires enclosure / interlock / eye-safe wavelength engineering. NOT hand-waved.
+
+three advances that would close the gap:
+  (1) parallel addressed traps: 1 -> ~938 independent steerable traps (SLM/DMD time-multiplexed holograms, kHz per-trap steering)
+  (2) steering speed: 0.5 m/s -> ~25 m/s (resonant/AOD steering + reduced-drag particles) = ~50x more voxels/s per trap
+  (3) persistence: phosphorescent particles with ~10 ms glow decouple brightness from revisit rate: each trap paints ~4x more voxels per sweep than it can revisit
+
+======================================================================
+DONE — all numbers above are computed, not typed.

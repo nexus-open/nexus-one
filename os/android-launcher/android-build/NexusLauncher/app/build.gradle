@@ -1,0 +1,14 @@
+plugins { id "com.android.application"; id "org.jetbrains.kotlin.android" }
+android {
+    namespace "com.nexus.launcher"
+    compileSdk 34
+    defaultConfig {
+        applicationId "com.nexus.launcher"
+        minSdk 26
+        targetSdk 34
+        versionCode 1
+        versionName "0.1-nexus-os-v0.8"
+    }
+    buildTypes { release { minifyEnabled false } }
+}
+dependencies { implementation "androidx.core:core-ktx:1.13.1" }

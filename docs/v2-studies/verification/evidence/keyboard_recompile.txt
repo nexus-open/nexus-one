@@ -1,0 +1,10 @@
+xtensa-esp-elf-g++: fatal error: cannot specify '-o' with '-c', '-S' or '-E' with multiple files
+compilation terminated.
+
+[92mUsed library[0m [92mVersion[0m [90mPath[0m
+[93mWire[0m         3.3.12  [90m~/tools/arduino-data/packages/esp32/hardware/esp32/3.3.12/libraries/Wire[0m
+[93mUSB[0m          3.3.12  [90m~/tools/arduino-data/packages/esp32/hardware/esp32/3.3.12/libraries/USB[0m
+
+[92mUsed platform[0m [92mVersion[0m [90mPath[0m
+[93mesp32:esp32[0m   3.3.12  [90m~/tools/arduino-data/packages/esp32/hardware/esp32/3.3.12[0m
+Error during build: exit status 1

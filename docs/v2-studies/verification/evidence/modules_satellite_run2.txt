@@ -1,0 +1,23 @@
+=== NEXUS ONE v2.0 satellite link-budget sanity (class level) ===
+Band: n255 L-band UL ~1640 MHz | device TX 23 dBm + 3 dBi -> EIRP 26 dBm
+
+GEO (d=35786 km): FSPL = 187.8 dB
+  Pr_iso = -161.8 dBm
+  Sanity: 3GPP R17 IoT-NTN (NB-IoT NTN, 180 kHz, up to 128x
+  repetitions, ~-13 dB SNR operating point) is DESIGNED for
+  exactly this ~188 dB path — commercial proof: Motorola Defy 2
+  / CAT S75 / Defy Satellite Link ship MT6825 on GEO networks.
+
+LEO (d=550 km): FSPL = 151.5 dB
+  Pr_iso = -125.5 dBm
+  Sanity: 36 dB easier than GEO — closes with wide margin;
+  same modem class, same antenna.
+
+Downlink (satellite -> phone, 1525-1559 MHz DL):
+  Satellite EIRP density is network-controlled; phone RX needs only
+  ~-3 dBi patch gain + modem sensitivity (~-130 dBm class, ASSUMPTION).
+  Paging/messaging DL on GEO is the proven commercial configuration.
+
+NOT-VERIFIED: per-operator G/T, EIRP-density regulatory mask,
+  in-situ antenna efficiency with the real end-cap + hand/body loading,
+  3GPP R17 certification of the module as built.

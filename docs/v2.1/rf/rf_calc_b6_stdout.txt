@@ -1,0 +1,109 @@
+========================================================================
+NEXUS ONE B6 — RF WINDOW STUDY (material-constant simulation)
+========================================================================
+
+SOURCES (constants used — all published; nothing invented):
+[S1] Curbell Plastics, "Plastics for High-Performance Radomes" white paper
+     (comparative radome-materials table, GHz measurements):
+     PC: eps_r = 2.90 @2.5 GHz, 2.74 @2.44 GHz, 2.96 @5 GHz;
+         tan_d = 0.005 @2.5 GHz, 0.0051 @2.44 GHz, 0.006 @5 GHz.
+     https://www.curbellplastics.com/wp-content/uploads/2022/11/Plastics-for-High-Performance-Radomes-White-Paper.pdf
+[S2] PMC11314315 (peer-reviewed, electrodynamic properties of ABS, 8-12 GHz):
+     pure ABS eps_r' = 2.4806..2.4709, eps_r'' = 0.085..0.115
+     -> tan_d = 0.034..0.046 at X-band (upper bound; L/S-band runs lower).
+     https://pmc.ncbi.nlm.nih.gov/articles/PMC11314315/
+[S3] Panasonic PGS datasheet (EYG/EYG-S series, industrial.panasonic.com):
+     electrical conductivity, ab-plane = 10,000 S/cm (standard grades)
+     = 1.0e6 S/m; thin grades (25/17/10 um) = 20,000 S/cm = 2.0e6 S/m.
+     Thicknesses 10..100 um. Values reference-only per datasheet.
+     https://industrial.panasonic.com/cdbs/www-data/pdf/AYA0000/AYA0000C59.pdf
+[S4] NEXUS ONE v2.0 satellite link design point (DESIGN_v2_0/modules/
+     modules_report.md, satellite_link.py stdout, verbatim): n255 L-band UL
+     ~1640 MHz, device TX 23 dBm + 3 dBi patch -> EIRP 26 dBm;
+     GEO d=35786 km -> FSPL 187.8 dB; LEO d=550 km -> FSPL 151.5 dB;
+     R17 IoT-NTN (NB-IoT NTN, 180 kHz, up to 128x reps, ~-13 dB SNR
+     operating point) designed for the ~188 dB GEO path.
+[S5] NEXUS ONE v2.1 thermal model (DESIGN_v2_1/thermal/thermal_model_v2.md):
+     config (c) = graphite ply spreader; flags RF keep-out coupling near
+     the antenna windows as unverified -> this study closes it on paper.
+[S6] NEXUS ONE v0.3 (MASTER_INDEX): cap walls thickened to the 2.0 mm
+     class (bounded 1.8..2.0 mm; calc run at 2.0 mm nominal).
+
+Blend constants (BOUNDED — exact blend unpublished):
+  nominal  eps_r=2.90  tan_d=0.010
+  best     eps_r=2.50  tan_d=0.005
+  worst    eps_r=3.00  tan_d=0.020
+
+--- 1. CAP-WALL INSERTION LOSS (2.0 mm PC/ABS, normal incidence) ---
+NTN n255 L-band UL       f=1.627 GHz
+    best     IL = 0.014 dB   (of which 0.0023 dB absorbed, rest = mismatch)
+    nominal  IL = 0.024 dB   (of which 0.0050 dB absorbed, rest = mismatch)
+    worst    IL = 0.032 dB   (of which 0.0103 dB absorbed, rest = mismatch)
+NTN n256 S-band UL       f=1.995 GHz
+    best     IL = 0.020 dB   (of which 0.0029 dB absorbed, rest = mismatch)
+    nominal  IL = 0.034 dB   (of which 0.0062 dB absorbed, rest = mismatch)
+    worst    IL = 0.044 dB   (of which 0.0126 dB absorbed, rest = mismatch)
+BLE 2.4 GHz              f=2.440 GHz
+    best     IL = 0.029 dB   (of which 0.0035 dB absorbed, rest = mismatch)
+    nominal  IL = 0.049 dB   (of which 0.0076 dB absorbed, rest = mismatch)
+    worst    IL = 0.062 dB   (of which 0.0154 dB absorbed, rest = mismatch)
+Wi-Fi-class 5 GHz (fwd)  f=5.000 GHz
+    best     IL = 0.110 dB   (of which 0.0072 dB absorbed, rest = mismatch)
+    nominal  IL = 0.179 dB   (of which 0.0155 dB absorbed, rest = mismatch)
+    worst    IL = 0.214 dB   (of which 0.0315 dB absorbed, rest = mismatch)
+
+--- 2. GRAPHITE PLY vs RF (v2.1 config-(c) stack) ---
+Panasonic PGS, ab-plane sigma = 1.0e6 S/m (std) / 2.0e6 S/m (thin) [S3]
+  L-band   std  sigma=1e+06 S/m t=25 um: skin depth=12.48 um (2003304 skin depths), Rs= 0.040 ohm/sq -> SE= 73.5 dB
+  L-band   std  sigma=1e+06 S/m t=50 um: skin depth=12.48 um (4006608 skin depths), Rs= 0.020 ohm/sq -> SE= 79.5 dB
+  L-band   thin sigma=2e+06 S/m t=25 um: skin depth= 8.82 um (2833100 skin depths), Rs= 0.020 ohm/sq -> SE= 79.5 dB
+  L-band   thin sigma=2e+06 S/m t=50 um: skin depth= 8.82 um (5666200 skin depths), Rs= 0.010 ohm/sq -> SE= 85.5 dB
+  2.4 GHz  std  sigma=1e+06 S/m t=25 um: skin depth=10.19 um (2453662 skin depths), Rs= 0.040 ohm/sq -> SE= 73.5 dB
+  2.4 GHz  std  sigma=1e+06 S/m t=50 um: skin depth=10.19 um (4907325 skin depths), Rs= 0.020 ohm/sq -> SE= 79.5 dB
+  2.4 GHz  thin sigma=2e+06 S/m t=25 um: skin depth= 7.20 um (3470003 skin depths), Rs= 0.020 ohm/sq -> SE= 79.5 dB
+  2.4 GHz  thin sigma=2e+06 S/m t=50 um: skin depth= 7.20 um (6940005 skin depths), Rs= 0.010 ohm/sq -> SE= 85.5 dB
+  => ANY graphite ply in the antenna near-field path is an OPAQUE reflector (33..80 dB block). Keep-outs are MANDATORY, not optional.
+
+--- 3. DETUNING RISK (ceramic patch behind 2.0 mm PC cap) ---
+Satellite antenna per v2.0 design: 25x25x4 mm ceramic patch, RHCP,
+3 dBi, tuned for the window. A high-eps ceramic substrate (eps~20-90)
+dominates the stored field, so a thin PC superstrate (eps~2.9) pulls
+f_res down only ~-1..-5%% (vs ~-10..-20%% for a low-eps patch).
+RULE: antenna MUST be tuned with the 2.0 mm cap present (in-situ tune).
+BUDGETED until measured: 0.5 dB untuned penalty, 0.2 dB tuned.
+Axial-ratio degradation for RHCP: second order (<0.3 dB) with symmetric window.
+(Full-wave confirmation needs HFSS/CST-class solver -> NOT-VERIFIED.)
+
+--- 4. LINK BUDGETS (design point [S4] + window effects) ---
+EIRP base 26 dBm (23 dBm TX + 3 dBi patch); window debits applied here.
+R17 operating point: -13 dB SNR in 180 kHz AFTER 128x rep combining [S4]
+  -> required pre-combining C/N0 = -13 + 10log10(180e3) - 10log10(128)
+
+GEO L-band n255 UL 1640 MHz (design point)
+  (G/T -10 dB/K bounded -12..-6 (ASSUMPTION))
+  C/N0 rx =  24.0 dBHz | required =  18.5 dBHz | MARGIN =  +5.6 dB
+  across bounded assumptions: margin  +2.6 .. +10.6 dB
+
+GEO S-band n256 UL 2000 MHz
+  C/N0 rx =  22.3 dBHz | required =  18.5 dBHz | MARGIN =  +3.9 dB
+  across bounded assumptions: margin  +0.9 ..  +8.9 dB
+
+LEO 550 km L-band (alt class)
+  (G/T -5 dB/K bounded -8..-2 (ASSUMPTION); 16 reps)
+  C/N0 rx =  65.3 dBHz | required =  27.5 dBHz | MARGIN = +37.8 dB
+  across bounded assumptions: margin +33.8 .. +41.8 dB
+
+--- 5. BLE 2.4 GHz (on-board control link) ---
+  10 m: TX 0 dBm, ant -2 dBi, wall IL 0.05 dB, FSPL 60.2 dB, sens -95 dBm -> margin +32.8 dB
+  => cap window is IRRELEVANT to the BLE link (tens of dB spare).
+
+========================================================================
+DECISIVE LINE (computed, not hand-written):
+  GEO L-band : MARGINAL-YES  margin +5.6 dB nominal  (bounded +2.6..+10.6 dB)
+  GEO S-band : MARGINAL      margin +3.9 dB nominal  (bounded +0.9..+8.9 dB — floor below 3 dB reserve)
+  LEO-class  : YES           margin +37.8 dB nominal
+  The cap wall costs ~0.03-0.05 dB and is NOT the link-killer; the margin
+  hinges on satellite G/T and in-situ antenna efficiency (NOT-VERIFIED).
+  Graphite ply inside antenna keep-outs = total block (73..86 dB) —
+  keep-outs are mandatory for thermal config (c).
+========================================================================

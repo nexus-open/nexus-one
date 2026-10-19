@@ -1,0 +1,19 @@
+# Build outputs
+*.bin
+*.elf
+*.a
+build/
+.pio/
+# Arduino cache
+.arduino/
+# OpenSCAD artifacts
+*.stl
+# Android
+*.apks
+local.properties
+# Editors
+.vscode/
+*.swp
+*~
+# OS
+.DS_Store

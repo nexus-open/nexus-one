@@ -1,0 +1,48 @@
+PASS A01 angle: silent below 1 deg change
+PASS A02 angle: 0.5 deg change does not notify
+PASS A03 angle: >=1 deg change notifies (x100 units)
+PASS A04 cmd: unbonded write rejected
+PASS A05 thermal: folded+storage slightly over -> dim request only (state 1, module kept)
+PASS A06 thermal: folded+camera way over (>budget+0.5) -> module cut, state 2
+PASS A07 thermal: folded+sensor within budget, state 0
+PASS A08 thermal: open+camera over -> module cut, state 2
+PASS A09 thermal: brightness cap 40% brings open+sensor inside 3 W
+PASS A10 watchdog: alive at 29.9 s
+PASS A11 watchdog: bay down at 30.1 s without heartbeat
+PASS A12 calibrate: refused unless closed detent
+PASS (a1) ADC nominal codes map to IDs 1..8 incl. new 33k/47k/68k
+  info: tightest ID window is ID 8 at 2.72% margin
+PASS (a2) +-2% combined error (1% resistor + calibrated ADC) maps correctly, all 8 IDs
+PASS (a2b) minimum ID window margin exceeds the 2.5% design budget
+PASS (a3) threshold boundaries resolve to the correct side
+PASS (a4) open divider (4095) -> ID 0, shorted (50) -> invalid 255
+PASS (b1) divider-vs-reg0 mismatch -> bay cut + fault
+PASS (b2) reg3 fault bit -> bay cut + fault
+PASS (b3) I2C 0x2A poll failure -> bay cut + fault
+PASS (b4) honest module: identify passes, rail on, USB enum gated on
+PASS (b5) mid-session reg3 fault -> cut within one poll cycle
+PASS (b6) power request with no module docked -> rail stays off
+PASS (b7) BLE-requested ID vs docked ID mismatch -> cut
+PASS (b8) same ID re-requested while ON -> stays ON, no rail glitch
+PASS (b9) ID changed under power -> rail drops, re-identify faults, cut
+PASS (c1) unauthenticated connect does NOT refresh watchdog
+PASS (c2) bonded+encrypted (re)connect refreshes watchdog
+PASS (c3) bonded+encrypted auth-complete refreshes watchdog
+PASS (c4) disconnect alone does not refresh watchdog
+PASS (c5) authenticated 0x00 heartbeat refreshes watchdog
+PASS (d1) moduleId 9 refused
+PASS (d2) moduleId 255 refused
+PASS (d3) moduleId 8 accepted by range check (identify still gates power)
+PASS (e1) TX-permit denied below 90% drum open
+PASS (e2) still denied at 197.9 deg (threshold is 198.0)
+PASS (e3) TX-permit granted at >=198.0 deg, reg 0x20 written
+PASS (e4) permit revoked when drum closes, reg 0x20 cleared
+PASS (f1) boot state is bonded-only advertising
+PASS (f2) 1999 ms hold does not open the window
+PASS (f3) 2000 ms hold opens the 60 s window
+PASS (f4) window still open at 59.999 s
+PASS (f5) window closes at 60 s -> bonded-only
+PASS (g1) F13: repeated calibrate sets absolute offset (no accumulation)
+PASS (g2) F13: glitchy detent (2/3 agreeing) keeps old stable value
+
+45 passed, 0 failed
