@@ -3,7 +3,7 @@
 For the later render pass (media tools). This agent does NOT generate images —
 spec only. Design language and no-gos below are binding on whoever renders.
 
-## Global design language (Hari-approved, per poster render v2)
+## Global design language (Fabulous-approved, per poster render v2)
 
 - Glossy black device finish (premium, fingerprint-honest, not matte grey).
 - Cyan light strips: thin luminous accent lines along the spine rails and the

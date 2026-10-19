@@ -16,7 +16,7 @@ GPLv3 does the same job for the software layer — firmware and OS changes stay 
 
 ## CC BY-SA 4.0 note (renders and vision boards)
 
-The images in `renders/` and `vision/` are licensed under [Creative Commons Attribution-ShareAlike 4.0 International](https://creativecommons.org/licenses/by/4.0/). You may share and adapt them, provided you credit "NEXUS ONE by Hari Charan" and license derivatives under the same terms.
+The images in `renders/` and `vision/` are licensed under [Creative Commons Attribution-ShareAlike 4.0 International](https://creativecommons.org/licenses/by/4.0/). You may share and adapt them, provided you credit "NEXUS ONE by Fabulous" and license derivatives under the same terms.
 
 ## Notices
 

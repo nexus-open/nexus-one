@@ -123,4 +123,4 @@ Details: [LICENSING.md](LICENSING.md). The reciprocal hardware license is delibe
 
 ## Origin
 
-**Created by Hari Charan — designed and simulated entirely on a phone, with AI assistance.** One phone, no laptop, zero budget: the whole thing (mechanics, simulations, firmware, OS, renders) was built digitally from a single concept poster. The story is part of the project — keep it honest and keep it open.
+**Created by Fabulous — designed and simulated entirely on a phone, with AI assistance.** One phone, no laptop, zero budget: the whole thing (mechanics, simulations, firmware, OS, renders) was built digitally from a single concept poster. The story is part of the project — keep it honest and keep it open.

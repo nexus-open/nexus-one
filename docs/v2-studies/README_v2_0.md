@@ -1,6 +1,6 @@
 # NEXUS ONE v2.0 — Build README
 
-**Built 2026-10-19** under Hari's mandates: DIGITAL-ONLY, REAL PHYSICS, HONEST LABELS, AUTONOMY, no scope cuts. The v1.0 freeze (ARCHIVE_v1_7, CODE_v1_6/v1_7) is untouched; v2.0 is a new branch under `DESIGN_v2_0/`.
+**Built 2026-10-19** under Fabulous's mandates: DIGITAL-ONLY, REAL PHYSICS, HONEST LABELS, AUTONOMY, no scope cuts. The v1.0 freeze (ARCHIVE_v1_7, CODE_v1_6/v1_7) is untouched; v2.0 is a new branch under `DESIGN_v2_0/`.
 
 **What v2.0 is:** ten of v1.8's eleven GAP+ROUTE vision elements now have real, simulated, parametric designs. The eleventh (volumetric holography) was re-measured — the gap is ~1000×, reported, not hidden.
 

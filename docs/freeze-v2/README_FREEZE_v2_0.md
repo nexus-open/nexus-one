@@ -25,7 +25,7 @@ Full evidence trees: `DESIGN_v2_0/` (designs, checkers, compiles, renders), `DES
 ## Decision log
 
 1. **Re-baseline (2026-10-19 17:48).** The vision boards are the target and stay whole; engineering attaches statuses and works toward them — never shrinks them. The v1.8 map, v2.0 build, and this freeze all execute that re-baseline.
-2. **Graphite ply (2026-10-19 19:36).** Hari delegated the thermal-stack choice ("It's your choice"). Muse chose config (c): folded mode is low-power by law (idle 0.30 W), so the Al spreader's extra thermal margin buys nothing usable; the graphite ply is a layer inside the existing CFRP layup — no new part, no unverified packaging fit. Its RF-coupling risk became a quantified layout rule (B6 keep-outs), not a reason to reject it.
+2. **Graphite ply (2026-10-19 19:36).** Fabulous delegated the thermal-stack choice ("It's your choice"). Muse chose config (c): folded mode is low-power by law (idle 0.30 W), so the Al spreader's extra thermal margin buys nothing usable; the graphite ply is a layer inside the existing CFRP layup — no new part, no unverified packaging fit. Its RF-coupling risk became a quantified layout rule (B6 keep-outs), not a reason to reject it.
 3. **Tablet mechanism: opposed dual-roll.** Single- and dual-panel alternatives were evaluated and rejected on numbers; the dual-roll keeps one continuous panel with drum 2 holding ≤1 turn at R8.
 4. **Neural module: build now on USB2.** Edge-TPU-class MCM (4 TOPS int8, ~2 TOPS/W) is real as a class; USB2 bounds only model-load bandwidth (~1 s/50 MB), not inference. USB3-over-pogo documented as a v2.x program, not built.
 5. **AirScreen promoted to bay module.** The v1.0 research dock became a 6.4 W bay module in v2.0 (mist + pico-DLP in the 120×24 rail).

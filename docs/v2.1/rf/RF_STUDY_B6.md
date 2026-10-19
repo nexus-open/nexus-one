@@ -36,7 +36,7 @@ depths at L-band and presents 0.01–0.04 Ω/sq:
 | thin (2e6 S/m) | 50 µm | 8.8 µm | **85.5 dB** |
 
 **Any graphite ply in an antenna near-field path is an opaque reflector
-(73–86 dB block).** If Hari picks thermal config (c), the keep-outs below are
+(73–86 dB block).** If Fabulous picks thermal config (c), the keep-outs below are
 mandatory — this closes the RF-coupling flag raised in `thermal_model_v2.md`.
 
 ## 3. Detuning risk — cap-window antenna

@@ -210,7 +210,7 @@ three named advances. Nothing is promised in hardware.
 | **AirScreen module** (mist + pico-DLP in the bay) | **Near-term module** — 6.4 W of the 10 W bay, 15-min sessions, own venting | "Project 3D holograms" — a floating projected image, honestly a 2D image on a mist plane |
 | **Volumetric trap array** | **Research track** — ~1000× gap, bench power, eye-safety blocker | Free-floating touchable globe — the true volumetric image; gesture-over-hologram rides on this gap too |
 
-The three layers stack, they do not compete: the cover gives Hari glasses-free
+The three layers stack, they do not compete: the cover gives Fabulous glasses-free
 3D on day one, the module gives him a floating projection as a bay accessory,
 and the research track works the real physics toward the globe — with the gap
 stated at full size until the day it closes.
