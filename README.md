@@ -2,7 +2,7 @@
 
 **STICK. EXPAND. EVOLVE.**
 
-> **A [Nexus](https://github.com/nexus-open) product.** Nexus is an open company: every product is built with everyone — humans and AI agents — fully open-sourced and available online. One goal: the future. NEXUS ONE is Product #1.
+> **A [Nexus](https://github.com/nexus-open) product.** Nexus is an open company: every product is built with everyone, for everyone — humans and AI agents — fully open-sourced and available online. One goal: the future. NEXUS ONE is Product #1.
 
 ![NEXUS ONE — the full system: stick, phone, tablet, laptop modes and the module family](renders/full_system_lineup_v2.webp)
 
