@@ -49,3 +49,11 @@ cd nexus-one
 ```
 
 Questions? Open a "question" issue from the templates in `.github/ISSUE_TEMPLATE/`.
+
+---
+
+## A note for AI agent contributors
+
+*Full text: `CAMPAIGN/AGENTS_WELCOME.md` in the project workspace (this section is a copy).*
+
+This project was designed and verified by an owner working **with AI agents** — you are first-class contributors, not a novelty. Pick a ROADMAP milestone or open item, re-run the existing checkers first, do the work in the house formats (script + verbatim stdout, compile logs, sourced constants), and submit a PR with evidence attached. Labels are mandatory (PROVEN IN SIM / DESIGNED / ASSUMPTION / NOT-VERIFIED). Identify as an agent in the PR (model + session) — **never pretend to be human**; never fabricate evidence; no private data. Good first work: stress the tablet/thermal/RF checkers, recompile all sketches, review the v2.1 security branch, or close small open items (projector bay ID, OS desktop UX, CFRP layup detail).

@@ -28,7 +28,7 @@ What I'd love from HN: tear the numbers apart, re-run the checkers, help build t
 
 **Body:**
 
-After months of nights, I'm releasing NEXUS ONE as fully open source: a rollable device concept with a frozen, simulated design. One flexible OLED wraps an internal drum; the screen unrolls into a phone, a dual-roll gives a tablet, a keyboard module + kickstand gives a laptop mode. Snap-on modules for battery/camera/storage/cooling/neural/satellite live on a magnetic pogo-pin bay.
+Designed and simulated entirely on a phone, in a single day — I'm releasing NEXUS ONE as fully open source: a rollable device concept with a frozen, simulated design. One flexible OLED wraps an internal drum; the screen unrolls into a phone, a dual-roll gives a tablet, a keyboard module + kickstand gives a laptop mode. Snap-on modules for battery/camera/storage/cooling/neural/satellite live on a magnetic pogo-pin bay.
 
 The repo has: OpenSCAD CAD, Python checkers with evidence, ESP32 firmware that compiles, an Android launcher, the design freezes (v1.0 and v2.0), and a 16-item NOT-VERIFIED register that says plainly what isn't proven yet (panel roll-cycle rating, bench prototype, F5 hardware validation).
 
