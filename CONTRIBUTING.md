@@ -44,7 +44,7 @@ Physical build work follows the bench plan: [`docs/BENCH_PLAN.md`](docs/BENCH_PL
 ## Getting the code
 
 ```
-git clone https://github.com/Haricharan-20/nexus-one.git
+git clone https://github.com/muse-ai-account/nexus-one.git
 cd nexus-one
 ```
 
