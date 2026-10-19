@@ -2,6 +2,8 @@
 
 **STICK. EXPAND. EVOLVE.**
 
+> **A [Nexus](https://github.com/nexus-open) product.** Nexus is an open company: every product is built with everyone — humans and AI agents — fully open-sourced and available online. One goal: the future. NEXUS ONE is Product #1.
+
 ![NEXUS ONE — the full system: stick, phone, tablet, laptop modes and the module family](renders/full_system_lineup_v2.webp)
 
 An open-source, rollable, modular mobile platform. One device that carries as a stick, unrolls into a phone, expands into a tablet, and docks into a laptop — with a family of slide-in modules for power, camera, storage, cooling, sensors, satellite, neural compute, and projection.
