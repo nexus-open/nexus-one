@@ -73,8 +73,8 @@ for name, r in results.items():
     print("%s: err=%.2e mm theta=[%.3f, %.3f] travel=%.2f mm visible=%.2f mm -> %s"
           % (name, r["max_length_error_mm"], *r["theta_range"], r["travel_mm"],
              r["visible_mm"], "PASS" if r["pass"] else "FAIL"))
-print("phone screen: 162.9 x %.1f mm (target 71.5)" % phone_screen)
-print("tablet screen: 162.9 x %.1f mm (target 142.8)" % tablet_screen)
+print("phone visible width: 162.9 x %.1f mm (target 71.5; physical panel is 162.9 x 74.5, 3 mm hidden in wrap/seams)" % phone_screen)
+print("tablet visible width: 162.9 x %.1f mm (target 142.8)" % tablet_screen)
 print("device: %.0f x %.0f x %.0f mm (v1.0: 183.9 x 34 x 22)" % (dev["L"], dev["W"], dev["T"]))
 print("mass: 241 + %d = %d g" % (sum(mass_add.values()), mass_tot))
 ok = overall_pass and abs(phone_screen - 71.5) < 0.05 and abs(tablet_screen - 142.8) < 0.05
