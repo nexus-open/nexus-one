@@ -3,15 +3,15 @@
 Logic model of nexus_controller.ino v2.1 (security branch) — the firmware's
 decision rules replicated 1:1 so they can be EXECUTED here.
 Mirrors: DESIGN_v2_1/firmware/nexus_controller/nexus_controller.ino
-New vs the v1.3 model: pairing window, moduleId 0..8 validation, F3 watchdog
+New vs the v1.3 model: pairing window, moduleId 0..9 validation, F3 watchdog
 gating, bay identify-before-power contract, absolute calibrate + debounced
 detents, TX-permit gate.
 """
 DRUM_MAX, OPEN_TH = 220.0, 198.0
 DRAW = {0: 0.0, 1: 0.0, 2: 2.5, 3: 1.2, 4: 0.3, 5: 0.6,
-        6: 0.5, 7: 2.0, 8: 3.0}
+        6: 0.5, 7: 2.0, 8: 3.0, 9: 6.4}
 ID_R = {1: 1000, 2: 2200, 3: 4700, 4: 10000, 5: 22000,
-        6: 33000, 7: 47000, 8: 68000}
+        6: 33000, 7: 47000, 8: 68000, 9: 150000}
 ADC_MAX = 4095
 
 
@@ -22,7 +22,8 @@ def adc_nominal(r_ohms):
 
 def divider_id(raw):
     """Mirror of bayDividerId(): thresholds at midpoints between nominals."""
-    if raw > 3832: return 0
+    if raw > 3967: return 0
+    if raw > 3704: return 9   # [v2.1] 150k projector
     if raw > 3473: return 8
     if raw > 3259: return 7
     if raw > 2978: return 6
@@ -205,7 +206,7 @@ class Controller:
             self.panel = data[1] != 0
         elif op == 0x02:
             mid = data[1]
-            if mid > 8:                        # F2: refuse unknown IDs
+            if mid > 9:                        # F2: refuse unknown IDs (0..9 known)
                 return "refused-bad-module-id"
             power_on = data[2] != 0
             if power_on and (self.bay_state != "ON" or self.bay_identified != mid):

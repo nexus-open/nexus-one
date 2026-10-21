@@ -12,7 +12,7 @@ GROUP B: new contract tests for the F1-F5/F13 fixes.
   (a) ID-resistor ADC mapping incl. 33k/47k/68k
   (b) divider/reg0 mismatch + reg3 fault -> bay cut
   (c) unauthenticated connect does NOT refresh watchdog; bonded+encrypted does
-  (d) moduleId > 8 refused in SetModulePower
+  (d) moduleId > 9 refused in SetModulePower
   (e) TX-permit only at >=90% drum open
   (f) pairing window open/close (bonus, F1)
 """
@@ -75,32 +75,41 @@ check("A12 calibrate: refused unless closed detent", c3.command(bytes([4]), 0) =
 
 # ============ GROUP B: new contract tests ============
 # (a) ID-resistor ADC mapping
-ok_a = all(divider_id(adc_nominal(ID_R[i])) == i for i in range(1, 9))
-check("(a1) ADC nominal codes map to IDs 1..8 incl. new 33k/47k/68k", ok_a)
+ok_a = all(divider_id(adc_nominal(ID_R[i])) == i for i in range(1, 10))
+check("(a1) ADC nominal codes map to IDs 1..9 incl. 150k projector", ok_a)
 # Error budget: the tightest adjacent pair is 47k/68k. Measure the true
 # minimum margin of every nominal to its nearest threshold.
 WINDOWS = {1: (120, 555), 2: (555, 1024), 3: (1024, 1678), 4: (1678, 2430),
-           5: (2430, 2978), 6: (2978, 3259), 7: (3259, 3473), 8: (3473, 3832)}
+           5: (2430, 2978), 6: (2978, 3259), 7: (3259, 3473), 8: (3473, 3704),
+           9: (3704, 3967)}
 min_margin, min_id = 1.0, None
-for i in range(1, 9):
+for i in range(1, 10):
     nom = adc_nominal(ID_R[i])
     lo, hi = WINDOWS[i]
     m = min(nom - lo, hi - nom) / nom
     if m < min_margin: min_margin, min_id = m, i
 print(f"  info: tightest ID window is ID {min_id} at {min_margin*100:.2f}% margin")
 ok2 = True
-for i in range(1, 9):
+for i in range(1, 10):
     nom = adc_nominal(ID_R[i])
     for code in (int(nom * 0.98), int(nom * 1.02)):
         if divider_id(code) != i: ok2 = False
-check("(a2) +-2% combined error (1% resistor + calibrated ADC) maps correctly, all 8 IDs", ok2)
+check("(a2) +-2% combined error (1% resistor + calibrated ADC) maps correctly, all 9 IDs", ok2)
 check("(a2b) minimum ID window margin exceeds the 2.5% design budget", min_margin > 0.025)
-bounds = [(3833, 0), (3832, 8), (3474, 8), (3473, 7), (3260, 7), (3259, 6),
+bounds = [(3968, 0), (3967, 9), (3705, 9), (3704, 8), (3474, 8), (3473, 7),
+          (3260, 7), (3259, 6),
           (2979, 6), (2978, 5), (2431, 5), (2430, 4), (1679, 4), (1678, 3),
           (1025, 3), (1024, 2), (556, 2), (555, 1), (121, 1), (120, 255)]
 check("(a3) threshold boundaries resolve to the correct side", all(divider_id(r) == i for r, i in bounds))
 check("(a4) open divider (4095) -> ID 0, shorted (50) -> invalid 255",
       divider_id(4095) == 0 and divider_id(50) == 255)
+# (a5) [v2.1] MOD_PROJECTOR=9 band: 150k nominal, margins, draw class
+nom9 = adc_nominal(ID_R[9])
+ok5 = (nom9 == 3839 and divider_id(nom9) == 9
+       and min(nom9 - 3704, 3967 - nom9) / nom9 > 0.033   # >=3.33% window
+       and divider_id(int(nom9 * 0.98)) == 9 and divider_id(int(nom9 * 1.02)) == 9
+       and DRAW[9] == 6.4)                                # 6.4 W class for reg2=64
+check("(a5) projector ID 9: 150k -> code 3839, >=3.33% window, +-2% holds, draw 6.4 W", ok5)
 
 # (b) mismatch / fault -> bay cut
 c = bonded(Controller())
@@ -166,13 +175,16 @@ check("(c5) authenticated 0x00 heartbeat refreshes watchdog", c.last_hb == 20000
 
 # (d) moduleId range validation (F2)
 c = bonded(Controller()); c.dock(3)
-r = c.command(bytes([2, 9, 1]), 0)
-check("(d1) moduleId 9 refused", r == "refused-bad-module-id" and c.module_id == 0 and not c.module_power)
+r = c.command(bytes([2, 10, 1]), 0)
+check("(d1) moduleId 10 refused", r == "refused-bad-module-id" and c.module_id == 0 and not c.module_power)
 r = c.command(bytes([2, 255, 1]), 0)
 check("(d2) moduleId 255 refused", r == "refused-bad-module-id" and c.module_id == 0 and not c.module_power)
 c.command(bytes([2, 8, 1]), 0)   # satellite (8) is valid but nothing docked matches
 check("(d3) moduleId 8 accepted by range check (identify still gates power)",
       c.module_id == 8 and not c.module_power)
+c.dock(9); c.command(bytes([2, 9, 1]), 0)  # projector (9) valid; honest dock
+check("(d4) moduleId 9 accepted by range check and honest dock powers on",
+      c.module_id == 9 and c.module_power)
 
 # (e) TX-permit gate (F4-4)
 c = bonded(Controller()); c.dock(8)
