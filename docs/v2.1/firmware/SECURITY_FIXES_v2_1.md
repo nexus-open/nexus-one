@@ -145,9 +145,10 @@ g2: 2/3 agreeing glitch keeps the old stable value; A12 baseline: refused unless
   core+built-in libraries only — nothing installed from downloads.arduino.cc).
 - **Baseline:** `test_firmware_logic.py` (v1.3 file, copied unmodified): **12/12**.
 - **v2.1 suite** (`test_v2_1_security.py` vs `controller_model_v2_1.py`, 1:1 mirror of the .ino):
-  **45/45** — A01–A12 baseline-equivalent (12) · (a) ADC mapping (5) · (b) bay contract (9) ·
-  (c) watchdog gating (5) · (d) moduleId validation (3) · (e) TX-permit (4) ·
+  **47/47** — A01–A12 baseline-equivalent (12) · (a) ADC mapping (6: +a5 projector ID-9 margin) · (b) bay contract (9) ·
+  (c) watchdog gating (5) · (d) moduleId validation (4: +d4 honest-dock) · (e) TX-permit (4) ·
   (f) pairing window (5) · (g) F13 (2). Full stdout: `verification/logic_tests_v2_1.txt`.
+  (45/45 was true before the 2026-10-21 projector close-out added a5 and d4.)
 - **Test-caught bugs during this workstream (fixed, all green now):**
   1. `bayIdentify()` left `bayState = BAY_BOOT` on success with nothing advancing it
      to `BAY_ON` — the rail would never have reached full power. Fixed in `bayTick()`.

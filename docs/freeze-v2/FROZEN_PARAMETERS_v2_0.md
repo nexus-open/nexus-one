@@ -125,3 +125,12 @@ All firmware sketches compile first-pass with ESP32 core 3.3.12 (v2.0 independen
 ## 9. Evidence index
 
 `DESIGN_v2_0/` (designs, checkers, compiles, verification/evidence/*), `DESIGN_v2_1/` (thermal/, firmware/, rf/RF_STUDY_B6.md + rf_calc_b6.py + stdout), `VISION_MAP_v1_8/` (v1.8), `ARCHIVE_v1_7/00_START_HERE/MASTER_INDEX.md` (v0.2–v1.7 record). This freeze folder: `VISION_MAP_v2_1.html`, `BOM_DELTA_v2_0.md`, `OPEN_ITEMS_v2_0.md`, `README_FREEZE_v2_0.md`.
+
+---
+
+## Addendum — 2026-10-22 (morning build)
+
+This is a frozen record; it is amended only by dated addenda, never rewritten in place.
+
+- **Firmware logic tests 45/45 → 47/47.** The v2.1 security suite grew by two tests with the 2026-10-21 projector module close-out: a5 (MOD_PROJECTOR = ID 9, 150 kΩ → ADC code 3839, ≥3.33% window, ±2% holds) and d4 (moduleId 9 accepted by range check, honest dock powers on). In-place references updated in `docs/v2.1/firmware/SECURITY_FIXES_v2_1.md`. Counts verified live (47 passed, 0 failed).
+- **Open item #11 advanced (DESIGNED):** R_c1 TIM+clamp for the config-(b) thermal stack — see `OPEN_ITEMS_v2_0.md` item 11 in this folder. R_c1 = 0.260 K/W nominal / 0.700 K/W worst-case bound vs the frozen 0.5 K/W assumption; folded cap 1.80 / 1.72 W vs frozen 1.75 W. Labels: DESIGNED; interface resistances ASSUMPTION; NOT-VERIFIED on hardware.
