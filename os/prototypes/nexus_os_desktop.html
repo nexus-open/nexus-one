@@ -99,7 +99,7 @@ total vs 3.0 W budget<div class="mbar"><i id="mon-tot-b" style="width:0%"></i></
 </div>
 <div id="kbnotice">⌨ Keyboard docked — CH_BAY reports id 6, powered. Unroll to ≥90% deployment for desktop mode.</div>
 <div id="capnote"></div>
-<p id="osnote">OS policy: ≤2 W folded, ≤1.5 W folded with battery module, ≤3 W open (thermal law from simulation). In desktop mode the OS caps display brightness so draw stays ≤3 W.</p>
+<p id="osnote">OS policy: ≤2 W folded, ≤1.5 W folded with battery module, ≤3 W open (thermal law from simulation). In desktop mode the OS caps display brightness to hold the draw within the 3 W open budget where possible; a heavy docked module can still push draw over budget — there is no firmware module-shed policy yet (U-6, NOT-VERIFIED).</p>
 </section>
 <aside class="card"><h2>Live engineering state</h2>
 <div class="stat"><b id="sW">0.85 W</b><small>Total draw (display + controller + modules)</small></div>
@@ -154,10 +154,16 @@ function render(){
   $('sBay').textContent=kb?'[6, 1, 100, 0]':'[0, 0, 0, 0]';
   const th=$('sTherm'); th.textContent=over?'OVER THERMAL BUDGET':'Within limits';
   th.className=over?'bad':'ok';
-  $('sThermSub').textContent='Budget '+fmt(limit,1)+' W for this pose'+(mods.battery&&u<0.9?' (battery module covers the back)':'')+(over?' — OS would dim the display / pause the module':'');
+  // U-1/U-6: the old "OS would dim the display / pause the module" over-suffix
+  // implied a recovery policy that does not exist — dimming cannot recover a
+  // module-over-budget condition and no firmware module-shed policy exists.
+  $('sThermSub').textContent='Budget '+fmt(limit,1)+' W for this pose'+(mods.battery&&u<0.9?' (battery module covers the back)':'')+(over?' — brightness dimming cannot recover a module-over-budget condition; no firmware module-shed policy yet (NOT-VERIFIED)':'');
   $('osnote').style.color=over?'var(--warn)':'';
   $('capnote').style.display=capped?'block':'none';
-  if(capped)$('capnote').textContent='Desktop thermal policy: display brightness capped at '+capPct+'% so total draw stays ≤ 3.0 W (firmware budgetState = 1, "ask OS to dim").';
+  // U-1 fix (2026-10-24): the capped note must never guarantee "stays ≤ 3.0 W"
+  // when a docked module keeps the draw over budget — two honest branches.
+  if(capped&&over)$('capnote').textContent='Desktop thermal policy: display brightness capped at minimum 5%, but draw '+fmt(draw,2)+' W still exceeds the 3.0 W open budget with the docked module. Dimming cannot recover this — no firmware module-shed policy yet (NOT-VERIFIED).';
+  else if(capped)$('capnote').textContent='Desktop thermal policy: display brightness capped at '+capPct+'% so draw '+fmt(draw,2)+' W stays within the 3.0 W open budget (firmware budgetState = 1, "ask OS to dim").';
   // desktop live content
   if(desktop){
     $('term-body').textContent='nexus> drum '+Math.round(u*220)+'° open | CH_BAY [6,1,100,0]\nnexus> mode DESKTOP | draw '+fmt(draw,2)+' W / 3.0 W\nnexus> thermal '+(over?'OVER BUDGET':'within limits')+(capped?' | brightness '+capPct+'%':'')+'\nnexus> ';
