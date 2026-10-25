@@ -35,6 +35,7 @@ main{max-width:1060px;margin:auto;padding:20px}h1{margin:0;font-size:clamp(24px,
 .mbar{height:7px;background:#13243a;border-radius:4px;margin:2px 0 6px;overflow:hidden}
 .mbar i{display:block;height:100%;background:linear-gradient(90deg,#2e7fb8,var(--cy));border-radius:4px}
 #kbnotice{display:none;margin-top:8px;border:1px solid var(--warn);color:var(--warn);border-radius:10px;padding:8px 10px;font-size:12px}
+#fieldhint{display:none;margin-top:8px;border:1px solid var(--cy);color:var(--cy);border-radius:10px;padding:8px 10px;font-size:12px}
 #capnote{display:none;margin-top:8px;color:var(--mut);font-size:12px}
 input[type=range]{width:100%}button{border:1px solid #34516d;background:#14243a;color:var(--tx);border-radius:10px;padding:9px 12px;font-weight:650;cursor:pointer}
 button[aria-pressed=true]{background:#0c3a54;border-color:var(--cy)}
@@ -98,6 +99,7 @@ total vs 3.0 W budget<div class="mbar"><i id="mon-tot-b" style="width:0%"></i></
 <button data-mod="keyboard" aria-pressed="false">⌨ Keyboard Module (ID 6)</button>
 </div>
 <div id="kbnotice">⌨ Keyboard docked — CH_BAY reports id 6, powered. Unroll to ≥90% deployment for desktop mode.</div>
+<div id="fieldhint"></div>
 <div id="capnote"></div>
 <p id="osnote">OS policy: ≤2 W folded, ≤1.5 W folded with battery module, ≤3 W open (thermal law from simulation). In desktop mode the OS caps display brightness to hold the draw within the 3 W open budget where possible; a heavy docked module can still push draw over budget — there is no firmware module-shed policy yet (U-6, NOT-VERIFIED).</p>
 </section>
@@ -129,7 +131,17 @@ function render(){
   $('strip').style.display=(!desktop&&u<0.55)?'flex':'none';
   $('home').style.display=(!desktop&&u<0.55)?'none':'block';
   $('home').style.display=desktop?'none':$('home').style.display;
-  $('holo').style.display=(field&&u>=0.99&&!desktop)?'grid':'none';
+  // U-5 fix (2026-10-25): arming light-field used to fail silently below full
+  // deployment (and inside desktop mode) — the layer just stayed hidden with
+  // no explanation. Now an armed-but-hidden state always says why.
+  const holoVisible=(field&&u>=0.99&&!desktop);
+  $('holo').style.display=holoVisible?'grid':'none';
+  if(field&&!holoVisible){
+    $('fieldhint').style.display='block';
+    $('fieldhint').textContent=desktop
+      ?'Light-field armed — desktop mode is active, so the light-field layer is hidden. Exit desktop mode (undock the keyboard or roll below 90%) to see it.'
+      :'Light-field armed — full deployment (100%) required; currently at '+Math.round(u*100)+'%. Unroll fully to see the light-field layer.';
+  } else $('fieldhint').style.display='none';
   $('dsk').style.display=desktop?'block':'none';
   $('modeName').textContent=desktop?'Desktop mode — laptop':(field&&u>=0.99?'Light-Field Mode':u<0.05?'Stick mode':u>=0.99?'Smartphone mode':'Expanding… ('+Math.round(u*100)+'%)');
   $('kbnotice').style.display=(kb&&!desktop)?'block':'none';
@@ -197,10 +209,17 @@ document.querySelectorAll('.window').forEach(w=>{
 const tbMap={'win-term':'tb-term','win-files':'tb-files','win-sys':'tb-sys'};
 document.querySelectorAll('.wbtn').forEach(b=>b.addEventListener('click',()=>{
   const w=$(b.dataset.w),tb=$(tbMap[b.dataset.w]);
-  if(b.dataset.a==='min'||b.dataset.a==='close'){w.style.display='none';tb.setAttribute('aria-pressed','false');}
+  // U-3 fix (2026-10-25): min and close used to be behaviorally identical
+  // (both just hid the window). Now they differ: min hides and the taskbar
+  // button restores it; close hides AND marks the taskbar button closed —
+  // clicking a closed taskbar button reopens the window and clears the mark.
+  if(b.dataset.a==='min'){w.style.display='none';tb.setAttribute('aria-pressed','false');}
+  if(b.dataset.a==='close'){w.style.display='none';tb.setAttribute('aria-pressed','false');tb.dataset.closed='1';tb.title='Closed — click to reopen';}
 }));
 Object.entries(tbMap).forEach(([wid,tid])=>{$(tid).addEventListener('click',()=>{
-  const w=$(wid),tb=$(tid),vis=w.style.display!=='none';
+  const w=$(wid),tb=$(tid);
+  if(tb.dataset.closed){delete tb.dataset.closed;tb.title='';w.style.display='block';tb.setAttribute('aria-pressed','true');w.style.zIndex=++zTop;return;}
+  const vis=w.style.display!=='none';
   w.style.display=vis?'none':'block';tb.setAttribute('aria-pressed',String(!vis));
   if(!vis)w.style.zIndex=++zTop;
 });});
