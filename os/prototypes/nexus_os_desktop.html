@@ -37,6 +37,10 @@ main{max-width:1060px;margin:auto;padding:20px}h1{margin:0;font-size:clamp(24px,
 #kbnotice{display:none;margin-top:8px;border:1px solid var(--warn);color:var(--warn);border-radius:10px;padding:8px 10px;font-size:12px}
 #fieldhint{display:none;margin-top:8px;border:1px solid var(--cy);color:var(--cy);border-radius:10px;padding:8px 10px;font-size:12px}
 #capnote{display:none;margin-top:8px;color:var(--mut);font-size:12px}
+/* U-4 fix (2026-10-26): keyboard focus must be visible, and the live region
+   must be readable by assistive tech without taking visual space. */
+button:focus-visible,.wbtn:focus-visible,.tbbtn:focus-visible,.tbar:focus-visible{outline:2px solid var(--cy);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 input[type=range]{width:100%}button{border:1px solid #34516d;background:#14243a;color:var(--tx);border-radius:10px;padding:9px 12px;font-weight:650;cursor:pointer}
 button[aria-pressed=true]{background:#0c3a54;border-color:var(--cy)}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.stat{background:#0a1320;border:1px solid var(--line);border-radius:11px;padding:10px;margin-bottom:8px}
@@ -101,6 +105,7 @@ total vs 3.0 W budget<div class="mbar"><i id="mon-tot-b" style="width:0%"></i></
 <div id="kbnotice">⌨ Keyboard docked — CH_BAY reports id 6, powered. Unroll to ≥90% deployment for desktop mode.</div>
 <div id="fieldhint"></div>
 <div id="capnote"></div>
+<div id="oslive" class="sr-only" aria-live="polite"></div>
 <p id="osnote">OS policy: ≤2 W folded, ≤1.5 W folded with battery module, ≤3 W open (thermal law from simulation). In desktop mode the OS caps display brightness to hold the draw within the 3 W open budget where possible; a heavy docked module can still push draw over budget — there is no firmware module-shed policy yet (U-6, NOT-VERIFIED).</p>
 </section>
 <aside class="card"><h2>Live engineering state</h2>
@@ -119,6 +124,12 @@ Same v0.8 power/thermal model as the phone prototype — keyboard adds 0.5 W.</p
 <script>
 const $=id=>document.getElementById(id), uEl=$('u');
 let mods={battery:false,camera:false,storage:false,sensor:false,keyboard:false}, bright=false, field=false;
+let lastLive='';
+// U-4 fix (2026-10-26): a polite live region announces discrete state
+// changes to assistive tech. Direct action announcements (min/close/restore)
+// write straight through; render() only rewrites on a category transition,
+// so dragging the deployment slider does not spam announcements per tick.
+function announce(msg){const el=$('oslive');el.textContent='';el.textContent=msg;}
 const MODW={camera:2.5,storage:1.2,sensor:0.3,keyboard:0.5};
 function fmt(n,d=1){return n.toFixed(d)}
 function render(){
@@ -176,6 +187,16 @@ function render(){
   // when a docked module keeps the draw over budget — two honest branches.
   if(capped&&over)$('capnote').textContent='Desktop thermal policy: display brightness capped at minimum 5%, but draw '+fmt(draw,2)+' W still exceeds the 3.0 W open budget with the docked module. Dimming cannot recover this — no firmware module-shed policy yet (NOT-VERIFIED).';
   else if(capped)$('capnote').textContent='Desktop thermal policy: display brightness capped at '+capPct+'% so draw '+fmt(draw,2)+' W stays within the 3.0 W open budget (firmware budgetState = 1, "ask OS to dim").';
+  // U-4 live announcements: only on category transitions (mode, thermal
+  // budget, light-field blocker, brightness-cap branch) — never per tick.
+  const liveKey=[desktop?'desktop':'stick',over?'over':'ok',field&&!holoVisible?(desktop?'field-desktop':'field-deploy'):'field-off',capped?(over?'cap-over':'cap-ok'):'cap-off'].join('|');
+  if(liveKey!==lastLive){
+    lastLive=liveKey;
+    announce((desktop?'Desktop mode, laptop.':$('modeName').textContent+'.')
+      +(over?' Over thermal budget.':' Within thermal budget.')
+      +(field&&!holoVisible?(desktop?' Light-field hidden: desktop mode is active.':' Light-field hidden: full deployment required.'):'')
+      +(capped?(over?' Display brightness capped at minimum, still over budget.':' Display brightness capped to stay within budget.'):''));
+  }
   // desktop live content
   if(desktop){
     $('term-body').textContent='nexus> drum '+Math.round(u*220)+'° open | CH_BAY [6,1,100,0]\nnexus> mode DESKTOP | draw '+fmt(draw,2)+' W / 3.0 W\nnexus> thermal '+(over?'OVER BUDGET':'within limits')+(capped?' | brightness '+capPct+'%':'')+'\nnexus> ';
@@ -196,8 +217,35 @@ function tickClock(){const d=new Date(),p=n=>String(n).padStart(2,'0');$('tb-clo
 setInterval(tickClock,1000);
 // window drag / resize / min / close
 let zTop=20,dragEl=null,rsEl=null,sx=0,sy=0,ox=0,oy=0,ow=0,oh=0;
+const winTitle={'win-term':'Terminal','win-files':'Files','win-sys':'System Monitor'};
 document.querySelectorAll('.window').forEach(w=>{
   const bar=w.querySelector('.tbar');
+  // U-4 fix (2026-10-26): dragging and resizing were pointer-only, so a
+  // keyboard user could not move or resize a window at all. The title bar
+  // is now focusable: arrows move, Shift+arrows move faster, Ctrl+arrows
+  // resize — same 120×70 px minimums as the pointer path.
+  bar.setAttribute('tabindex','0');
+  bar.setAttribute('aria-label',winTitle[w.id]+' window title bar — arrow keys move the window, Shift plus arrows move faster, Control plus arrows resize');
+  bar.addEventListener('keydown',e=>{
+    if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;
+    e.preventDefault();
+    const step=e.shiftKey?40:10;
+    const r=w.getBoundingClientRect(),p=$('dsk').getBoundingClientRect();
+    let left=r.left-p.left,top=r.top-p.top;
+    if(e.ctrlKey){
+      if(e.key==='ArrowRight')w.style.width=Math.max(120,r.width+step)+'px';
+      if(e.key==='ArrowDown')w.style.height=Math.max(70,r.height+step)+'px';
+      if(e.key==='ArrowLeft')w.style.width=Math.max(120,r.width-step)+'px';
+      if(e.key==='ArrowUp')w.style.height=Math.max(70,r.height-step)+'px';
+    } else {
+      if(e.key==='ArrowRight')left+=step;
+      if(e.key==='ArrowLeft')left-=step;
+      if(e.key==='ArrowDown')top+=step;
+      if(e.key==='ArrowUp')top-=step;
+      w.style.left=left+'px';w.style.top=top+'px';
+    }
+    w.style.zIndex=++zTop;
+  });
   bar.addEventListener('pointerdown',e=>{if(e.target.closest('.wbtn'))return;dragEl=w;w.style.zIndex=++zTop;sx=e.clientX;sy=e.clientY;const r=w.getBoundingClientRect(),p=$('dsk').getBoundingClientRect();ox=r.left-p.left;oy=r.top-p.top;try{bar.setPointerCapture(e.pointerId)}catch(_){}});
   bar.addEventListener('pointermove',e=>{if(dragEl!==w)return;w.style.left=(ox+e.clientX-sx)+'px';w.style.top=(oy+e.clientY-sy)+'px';});
   bar.addEventListener('pointerup',()=>{dragEl=null;});
@@ -207,21 +255,27 @@ document.querySelectorAll('.window').forEach(w=>{
   rz.addEventListener('pointerup',()=>{rsEl=null;});
 });
 const tbMap={'win-term':'tb-term','win-files':'tb-files','win-sys':'tb-sys'};
-document.querySelectorAll('.wbtn').forEach(b=>b.addEventListener('click',()=>{
+document.querySelectorAll('.wbtn').forEach(b=>{
+  // U-4 fix (2026-10-26): bare "–"/"×" buttons announced nothing useful to
+  // assistive tech. Each now carries its window and action in its name.
+  b.setAttribute('aria-label',(b.dataset.a==='min'?'Minimize ':'Close ')+winTitle[b.dataset.w]);
+  b.addEventListener('click',()=>{
   const w=$(b.dataset.w),tb=$(tbMap[b.dataset.w]);
   // U-3 fix (2026-10-25): min and close used to be behaviorally identical
   // (both just hid the window). Now they differ: min hides and the taskbar
   // button restores it; close hides AND marks the taskbar button closed —
   // clicking a closed taskbar button reopens the window and clears the mark.
-  if(b.dataset.a==='min'){w.style.display='none';tb.setAttribute('aria-pressed','false');}
-  if(b.dataset.a==='close'){w.style.display='none';tb.setAttribute('aria-pressed','false');tb.dataset.closed='1';tb.title='Closed — click to reopen';}
-}));
+  if(b.dataset.a==='min'){w.style.display='none';tb.setAttribute('aria-pressed','false');announce(winTitle[b.dataset.w]+' minimized. Taskbar button restores it.');}
+  if(b.dataset.a==='close'){w.style.display='none';tb.setAttribute('aria-pressed','false');tb.dataset.closed='1';tb.title='Closed — click to reopen';announce(winTitle[b.dataset.w]+' closed. Taskbar button reopens it.');}
+  });
+});
 Object.entries(tbMap).forEach(([wid,tid])=>{$(tid).addEventListener('click',()=>{
   const w=$(wid),tb=$(tid);
-  if(tb.dataset.closed){delete tb.dataset.closed;tb.title='';w.style.display='block';tb.setAttribute('aria-pressed','true');w.style.zIndex=++zTop;return;}
+  if(tb.dataset.closed){delete tb.dataset.closed;tb.title='';w.style.display='block';tb.setAttribute('aria-pressed','true');w.style.zIndex=++zTop;announce(winTitle[wid]+' reopened.');return;}
   const vis=w.style.display!=='none';
   w.style.display=vis?'none':'block';tb.setAttribute('aria-pressed',String(!vis));
-  if(!vis)w.style.zIndex=++zTop;
+  if(!vis){w.style.zIndex=++zTop;announce(winTitle[wid]+' restored.');}
+  else announce(winTitle[wid]+' hidden.');
 });});
 uEl.addEventListener('input',render);
 $('bBright').onclick=e=>{bright=!bright;e.target.setAttribute('aria-pressed',bright);render()};
