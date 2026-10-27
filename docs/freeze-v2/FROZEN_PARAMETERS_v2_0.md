@@ -134,3 +134,12 @@ This is a frozen record; it is amended only by dated addenda, never rewritten in
 
 - **Firmware logic tests 45/45 → 47/47.** The v2.1 security suite grew by two tests with the 2026-10-21 projector module close-out: a5 (MOD_PROJECTOR = ID 9, 150 kΩ → ADC code 3839, ≥3.33% window, ±2% holds) and d4 (moduleId 9 accepted by range check, honest dock powers on). In-place references updated in `docs/v2.1/firmware/SECURITY_FIXES_v2_1.md`. Counts verified live (47 passed, 0 failed).
 - **Open item #11 advanced (DESIGNED):** R_c1 TIM+clamp for the config-(b) thermal stack — see `OPEN_ITEMS_v2_0.md` item 11 in this folder. R_c1 = 0.260 K/W nominal / 0.700 K/W worst-case bound vs the frozen 0.5 K/W assumption; folded cap 1.80 / 1.72 W vs frozen 1.75 W. Labels: DESIGNED; interface resistances ASSUMPTION; NOT-VERIFIED on hardware.
+
+---
+
+## Addendum — 2026-10-27 (morning build)
+
+This is a frozen record; it is amended only by dated addenda, never rewritten in place.
+
+- **Firmware logic tests 47/47 → 56/56.** The v2.1 security suite grew by nine tests with the 2026-10-27 U-6 module-shed recovery close-out: group (h) — shed latches, shed is not a bay fault, budget state stays 2 while latched, cooldown + projected-draw re-arm gate, different-module clears the latch, power-toggle does not bypass. In-place references updated in `docs/v2.1/firmware/SECURITY_FIXES_v2_1.md`. Counts verified live (56 passed, 0 failed). Firmware compile: 582,877 B flash / 34,404 B RAM (ESP32 core 3.3.12).
+- **Open item #14 CLOSED:** the last remainder, U-6 (module-shed recovery policy), is now DESIGNED in the v2.1 firmware — see `OPEN_ITEMS_v2_0.md` item 14 in this folder. NOT-VERIFIED on hardware, as with F4/F5; the 30 s cooldown and 0.25 W hysteresis are design constants, not measurements.

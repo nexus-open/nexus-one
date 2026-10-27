@@ -225,5 +225,53 @@ c.deg = 50; r = c.command(bytes([4]), 0)
 check("(g2) F13: glitchy detent (2/3 agreeing) keeps old stable value",
       c.detents == 0b010 and c.zero_offset == 50.0)
 
+# (h) U-6 module-shed recovery policy (2026-10-27 morning build)
+# Shed path: sensor (0.3 W) just below the open threshold — folded budget
+# 2.0 W, draw at 197 deg = (0.6+2*197/220)+0.35+0.3 = 3.04 W > 2.5 W -> shed.
+def shed_sensor(ctrl, now_ms):
+    ctrl.set_module_power(False)
+    ctrl.dock(4)
+    ctrl.command(bytes([2, 4, 1]), now_ms)
+    ctrl.deg = 197.0
+    ctrl.enforce()
+    return ctrl
+c = bonded(Controller())
+c = shed_sensor(c, 1000)
+check("(h1) U-6: shed latches (module off, state 2, latch on shed module 4)",
+      not c.module_power and c.budget_state == 2 and c.shed_latched
+      and c.shed_module_id == 4)
+check("(h2) U-6: shed is not a bay fault (fault code stays 0, bay OFF not FAULT)",
+      c.bay_fault == 0 and c.bay_state == "OFF")
+c.enforce()
+check("(h3) U-6: state stays 2 while latched even with draw back inside budget",
+      c.budget_state == 2)
+r = c.command(bytes([2, 4, 1]), 5000)   # same module, 4 s after shed
+check("(h4) U-6: immediate re-arm refused on cooldown (rail stays off)",
+      r == "refused-shed-cooldown" and not c.module_power and c.shed_latched)
+r = c.command(bytes([2, 4, 1]), 31000)  # cooldown passed, but still folded 197 deg
+check("(h5) U-6: post-cooldown re-arm refused while projected draw is over",
+      r == "refused-shed-projected-over" and not c.module_power and c.shed_latched)
+c.deg = 220.0; c.cap_pct = 40           # open + dimmed: projected 1.69 W <= 2.75 W
+r = c.command(bytes([2, 4, 1]), 32000)
+check("(h6) U-6: re-arm succeeds after cooldown + open pose + dim (latch clears)",
+      r == "ok" and c.module_power and not c.shed_latched)
+c.enforce()
+check("(h7) U-6: re-armed module inside budget reports state 0",
+      c.budget_state == 0)
+# Different-module request clears a latch without waiting out the policy.
+c = bonded(Controller())
+c = shed_sensor(c, 1000)
+c.set_module_power(False); c.dock(3)
+r = c.command(bytes([2, 3, 1]), 2000)   # storage, 1 s after the sensor shed
+check("(h8) U-6: different-module request clears the latch and powers on",
+      r == "ok" and c.module_power and not c.shed_latched)
+# Power-off toggle does NOT clear a same-module latch (must pass the gate).
+c = bonded(Controller())
+c = shed_sensor(c, 1000)
+c.command(bytes([2, 4, 0]), 2000)       # explicit power-off while latched
+r = c.command(bytes([2, 4, 1]), 32000)  # cooldown passed, still folded -> over
+check("(h9) U-6: power-off toggle does not bypass the re-arm gate",
+      r == "refused-shed-projected-over" and not c.module_power and c.shed_latched)
+
 print(f"\n{passed} passed, {failed} failed")
 raise SystemExit(1 if failed else 0)

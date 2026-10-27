@@ -40,6 +40,12 @@ class Controller:
         self.deg = 0.0; self.last_notified = -10.0
         self.module_id = 0; self.module_power = False; self.panel = True
         self.cap_pct = 100; self.budget_state = 0
+        # [v2.1/U-6] shed latch + re-arm gate (mirror of nexus_controller.ino):
+        # shed_latched survives power-off toggles; it clears only on a
+        # passing re-arm or a different-module request. now_ms tracks the
+        # last command timestamp (the model's millis()).
+        self.shed_latched = False; self.shed_module_id = 0; self.shed_at_ms = 0
+        self.now_ms = 0
         self.bonded = False; self.encrypted = False; self.connected = False
         self.last_hb = 0; self.zero_offset = 0.0
         # debounced detents: 3 consecutive agreeing reads; start closed
@@ -83,12 +89,23 @@ class Controller:
         return 1.5 if self.module_id == 1 else 2.0
 
     def enforce(self):
+        # [v2.1/U-6] latched shed reports state 2 even with the module off
+        # and the draw back inside budget — "waiting for re-arm", not "OK".
+        if self.shed_latched:
+            self.budget_state = 2; return
         draw, budget = self.draw_w(), self.budget_w()
         if draw <= budget:
             self.budget_state = 0; return
         self.budget_state = 1
         if draw > budget + 0.5 and self.module_power and self.module_id != 1:
+            self.shed_latched = True; self.shed_module_id = self.module_id
+            self.shed_at_ms = self.now_ms
             self.set_module_power(False); self.budget_state = 2
+
+    def _projected_draw_w(self):
+        """Draw if the requested module were on now (pose + cap + table)."""
+        disp = (0.6 + 2.0 * (self.deg / DRUM_MAX)) * (self.cap_pct / 100) if self.panel else 0.0
+        return disp + 0.35 + DRAW[self.module_id]
 
     # ---- bay contract (F4) ----
     def dock(self, mod_id, draw_w=None, fault=False, reg0=None, i2c_ok=True):
@@ -157,10 +174,25 @@ class Controller:
         self.tx_permit = False
 
     def set_module_power(self, on):
+        # [v2.1/U-6] re-arm gate (mirror of setModulePower(true) in the .ino):
+        # same-module re-arm needs cooldown + projected draw <= budget-0.25;
+        # a failed gate leaves the rail off and the latch set. Returns a
+        # refusal string on gate failure, None otherwise.
+        if on and self.shed_latched:
+            if self.module_id != self.shed_module_id:
+                self.shed_latched = False      # different module: fresh start
+            else:
+                if (self.now_ms - self.shed_at_ms < 30000
+                        or self._projected_draw_w() > self.budget_w() - 0.25):
+                    self.budget_state = 2
+                    return ("refused-shed-cooldown" if self.now_ms - self.shed_at_ms < 30000
+                            else "refused-shed-projected-over")
+                self.shed_latched = False      # gate passed: re-arm proceeds
         self.bay_requested_power = on
         if not on:
             self.bay_state = "OFF"; self.module_power = False
             self.bay_fault = 0; self.tx_permit = False
+        return None
 
     def usb_may_enumerate(self):
         return self.bay_state == "ON"
@@ -197,6 +229,7 @@ class Controller:
 
     # ---- commands ----
     def command(self, data, now_ms):
+        self.now_ms = now_ms                 # model millis() for shed timing
         if not (self.bonded and self.encrypted):
             return "rejected-unsecured"
         op = data[0]
@@ -215,7 +248,9 @@ class Controller:
                 self.tx_permit = False
             self.bay_requested = mid
             self.module_id = mid
-            self.set_module_power(power_on)
+            refused = self.set_module_power(power_on)
+            if refused is not None:
+                return refused               # [v2.1/U-6] re-arm gate refused
             if power_on:
                 self.bay_tick()                # identify runs on the poll cycle
         elif op == 0x03:
